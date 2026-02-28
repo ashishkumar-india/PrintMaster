@@ -14,9 +14,11 @@
             "use": "@vercel/static"
         }
     ],
-    "routes": [
+    "redirects": [
         {
-            "handle": "filesystem"
+            "source": "/",
+            "destination": "/customer.html",
+            "permanent": false
         }
     ]
 }
