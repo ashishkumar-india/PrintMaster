@@ -145,7 +145,7 @@ function seedData() {
 
   const settings = {
     shopName: 'PrintMaster Press', ownerName: 'Rajesh Kumar',
-    address: 'IIT Patna, Bihar — 801103', phone: '9876543210',
+    address: 'IIT Patna, Bihar — 801103', phone: '7654064878',
     email: 'info@printmaster.in', gst: '10AABCU9603R1Z1',
     currency: '₹', taxRate: 18, dateFormat: 'DD/MM/YYYY'
   };
