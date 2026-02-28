@@ -171,13 +171,11 @@ function seedData() {
 function initNav() {
   const sidebar = document.querySelector('.sidebar');
   const toggleBtn = document.getElementById('sidebarToggle');
-  const collapsed = localStorage.getItem('pp_nav_collapsed') === '1';
-  if (collapsed) sidebar.classList.add('collapsed');
+  // Always start expanded — no localStorage persistence
 
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
-      localStorage.setItem('pp_nav_collapsed', sidebar.classList.contains('collapsed') ? '1' : '0');
       toggleBtn.innerHTML = sidebar.classList.contains('collapsed')
         ? '<span>&#9776;</span>'
         : '<span>&#9776;</span><span>Collapse</span>';
