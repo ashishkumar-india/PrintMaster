@@ -46,30 +46,26 @@ let dbLoaded = false;
 let dbLoadingPromise = null;
 
 async function loadSupabaseData() {
-  if (dbLoaded) return;
-  if (dbLoadingPromise) return dbLoadingPromise;
-
-  dbLoadingPromise = (async () => {
-    try {
-      const tables = ['settings', 'customers', 'orders', 'inventory', 'invoices', 'enquiries', 'services', 'portfolio'];
-      for (const table of tables) {
-        if (!window.supabaseClient) return; // Supabase not configured
-        const { data, error } = await window.supabaseClient.from(table).select('*').order('id', { ascending: true });
-        if (!error && data) {
-          if (table === 'settings') {
-            DB_CACHE.settings = data[0] || {};
-          } else {
-            DB_CACHE[table] = data;
-          }
+  try {
+    const tables = ['settings', 'customers', 'orders', 'inventory', 'invoices', 'enquiries', 'services', 'portfolio'];
+    for (const table of tables) {
+      if (!window.supabaseClient) break;
+      const { data, error } = await window.supabaseClient.from(table).select('*').order('id', { ascending: true });
+      if (!error && data) {
+        if (table === 'settings') {
+          DB_CACHE.settings = data[0] || {};
+        } else {
+          DB_CACHE[table] = data;
         }
+      } else if (error) {
+        console.warn(`Could not load table "${table}":`, error.message);
       }
-      dbLoaded = true;
-      document.dispatchEvent(new Event('db-loaded'));
-    } catch (e) {
-      console.error('Data load error', e);
     }
-  })();
-  return dbLoadingPromise;
+    dbLoaded = true;
+    document.dispatchEvent(new Event('db-loaded'));
+  } catch (e) {
+    console.error('Data load error', e);
+  }
 }
 
 const DB = {
