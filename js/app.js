@@ -8,23 +8,23 @@
 // HIGH SECURITY AUTHENTICATION CHECK (Supabase)
 // ──────────────────────────────────────────────────────────────────
 async function checkAuth() {
-    const isPublic = window.location.pathname.endsWith('customer.html') || window.location.pathname.endsWith('login.html') || window.location.pathname.endsWith('/') || window.location.pathname === '';
-    if (isPublic) return;
+  const isPublic = window.location.pathname.endsWith('customer.html') || window.location.pathname.endsWith('login.html') || window.location.pathname.endsWith('/') || window.location.pathname === '';
+  if (isPublic) return;
 
-    if (!window.supabaseClient) return;
+  if (!window.supabaseClient) return;
 
-    const { data: { session } } = await window.supabaseClient.auth.getSession();
-    if (!session) {
-        window.location.href = 'login.html';
-    }
+  const { data: { session } } = await window.supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+  }
 }
 checkAuth();
 
 async function logout() {
-    if (window.supabaseClient) {
-        await window.supabaseClient.auth.signOut();
-    }
-    window.location.href = 'login.html';
+  if (window.supabaseClient) {
+    await window.supabaseClient.auth.signOut();
+  }
+  window.location.href = 'login.html';
 }
 
 
@@ -96,15 +96,38 @@ const DB = {
     if (window.supabaseClient) {
       if (toDelete.length > 0) {
         for (const id of toDelete) {
-          await window.supabaseClient.from(key).delete().eq('id', id);
+          const { error: delErr } = await window.supabaseClient.from(key).delete().eq('id', id);
+          if (delErr) console.error(`Error deleting from ${key}:`, delErr);
         }
       }
       if (val.length > 0) {
-        // Strip out 'customer' virtual fields if table is 'invoices' etc if necessary?
-        // Let's just pass the whole object. Supabase gracefully ignores extra keys if they aren't columns? Actually Supabase DOES throw an error if you pass columns that don't exist in the table.
-        // wait, does Supabase ignore extra columns? Postgres throws "column doesn't exist".
-        // Let's rely on exact matches as our schema matches the data model.
-        await window.supabaseClient.from(key).upsert(val);
+        for (const item of val) {
+          const copy = { ...item };
+
+          // Check if this record already exists in Supabase by matching against our local cache snapshot
+          const existsLocally = localStorage.getItem(`pp_${key}`) && JSON.parse(localStorage.getItem(`pp_${key}`)).some(i => i.id === copy.id);
+
+          try {
+            if (existsLocally) {
+              // It exists, so we UPDATE
+              const { error } = await window.supabaseClient.from(key).update(copy).eq('id', copy.id);
+              if (error) throw error;
+            } else {
+              // It's a new record from the UI, so we INSERT and let Postgres assign the real ID
+              delete copy.id; // CRITICAL: Postgres auto-generates this!
+
+              const { error } = await window.supabaseClient.from(key).insert(copy);
+              if (error) throw error;
+            }
+          } catch (err) {
+            console.error(`Database error on ${key}:`, err);
+            alert(`Error saving ${key}: ` + err.message);
+          }
+        }
+
+        // At the end, force a fresh pull from the DB so all real IDs sync down
+        await loadSupabaseData();
+        document.dispatchEvent(new Event('db-loaded'));
       }
     }
   },
@@ -193,19 +216,19 @@ function initNav() {
     });
   }
 
-  
-    const sidemenu = document.querySelector('.sidebar-nav');
-    if (sidemenu && !document.getElementById('logoutBtn')) {
-        const logoutLink = document.createElement('a');
-        logoutLink.href = '#';
-        logoutLink.id = 'logoutBtn';
-        logoutLink.className = 'nav-item';
-        logoutLink.style.marginTop = '20px';
-        logoutLink.style.color = 'var(--danger)';
-        logoutLink.innerHTML = '<span class="nav-icon">🚪</span><span class="nav-label">Logout</span>';
-        logoutLink.onclick = (e) => { e.preventDefault(); logout(); };
-        sidemenu.appendChild(logoutLink);
-    }
+
+  const sidemenu = document.querySelector('.sidebar-nav');
+  if (sidemenu && !document.getElementById('logoutBtn')) {
+    const logoutLink = document.createElement('a');
+    logoutLink.href = '#';
+    logoutLink.id = 'logoutBtn';
+    logoutLink.className = 'nav-item';
+    logoutLink.style.marginTop = '20px';
+    logoutLink.style.color = 'var(--danger)';
+    logoutLink.innerHTML = '<span class="nav-icon">🚪</span><span class="nav-label">Logout</span>';
+    logoutLink.onclick = (e) => { e.preventDefault(); logout(); };
+    sidemenu.appendChild(logoutLink);
+  }
 
   // Active item
   const current = window.location.pathname.split('/').pop() || 'index.html';
