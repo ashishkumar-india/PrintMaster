@@ -1358,25 +1358,37 @@
         });
 
         // Quote form
-        function submitQuote() {
+        async function submitQuote() {
             const name = document.getElementById('cName').value.trim();
             const phone = document.getElementById('cPhone').value.trim();
             if (!name || !phone) { alert('Please enter your name and phone number.'); return; }
             const service = document.getElementById('cService').value;
             const qty = document.getElementById('cQty').value;
             const msg = document.getElementById('cMsg').value;
+
             // Save enquiry to Supabase (viewable by admin)
             const newEnquiry = { name, phone, email: document.getElementById('cEmail').value, service, qty, msg, date: new Date().toISOString(), status: 'New' };
-            if (window.supabaseClient) {
-                window.supabaseClient.from('enquiries').insert([newEnquiry]).then(() => console.log('Enquiry sent to DB')).catch(e => console.error(e));
-            }
-            // WhatsApp redirect
-            const wa = `https://wa.me/917654064878?text=Hi!%20I%20need%20*${encodeURIComponent(service)}*%0AName%3A%20${encodeURIComponent(name)}%0AQty%3A%20${encodeURIComponent(qty || 'TBD')}%0ADetails%3A%20${encodeURIComponent(msg || '—')}`;
             const fb = document.getElementById('submitFeedback');
-            fb.className = 'submit-feedback show success';
-            fb.textContent = '✅ Request submitted! Redirecting to WhatsApp…';
-            ['cName', 'cPhone', 'cEmail', 'cQty', 'cMsg'].forEach(id => document.getElementById(id).value = '');
-            setTimeout(() => window.open(wa, '_blank'), 1200);
+            fb.className = 'submit-feedback show';
+            fb.textContent = 'Submitting request...';
+
+            try {
+                if (window.supabaseClient) {
+                    await window.supabaseClient.from('enquiries').insert([newEnquiry]);
+                }
+
+                // WhatsApp redirect
+                const wa = `https://wa.me/917654064878?text=Hi!%20I%20need%20*${encodeURIComponent(service)}*%0AName%3A%20${encodeURIComponent(name)}%0AQty%3A%20${encodeURIComponent(qty || 'TBD')}%0ADetails%3A%20${encodeURIComponent(msg || '—')}`;
+                fb.className = 'submit-feedback show success';
+                fb.textContent = '✅ Request submitted! Redirecting to WhatsApp…';
+                ['cName', 'cPhone', 'cEmail', 'cQty', 'cMsg'].forEach(id => document.getElementById(id).value = '');
+                setTimeout(() => window.location.href = wa, 1000);
+
+            } catch (err) {
+                fb.className = 'submit-feedback show error';
+                fb.textContent = '❌ Error submitting request. Please contact us directly.';
+                console.error('Supabase error:', err);
+            }
         }
 
 
