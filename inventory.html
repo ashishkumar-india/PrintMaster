@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventory — PrintMaster Press</title>
+    <meta name="description" content="Track materials and inventory stock levels for your printing press." />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">🖨️</div>
+            <div class="logo-text">PrintMaster<small>Press Manager</small></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Main</div>
+            <a class="nav-item" data-page="index.html" href="index.html"><span class="nav-icon">📊</span><span
+                    class="nav-label">Dashboard</span></a>
+            <a class="nav-item" data-page="orders.html" href="orders.html"><span class="nav-icon">📋</span><span
+                    class="nav-label">Orders</span></a>
+            <a class="nav-item" data-page="customers.html" href="customers.html"><span class="nav-icon">👥</span><span
+                    class="nav-label">Customers</span></a>
+            <div class="nav-section-label">Operations</div>
+            <a class="nav-item" data-page="inventory.html" href="inventory.html"><span class="nav-icon">📦</span><span
+                    class="nav-label">Inventory</span><span class="nav-badge" id="invBadge">0</span></a>
+            <a class="nav-item" data-page="billing.html" href="billing.html"><span class="nav-icon">🧾</span><span
+                    class="nav-label">Billing</span></a>
+            <div class="nav-section-label">Website</div>
+            <a class="nav-item" data-page="enquiries.html" href="enquiries.html"><span class="nav-icon">📩</span><span
+                    class="nav-label">Enquiries</span><span class="nav-badge" id="enqBadge"
+                    style="display:none">0</span></a>
+            <a href="customer.html" target="_blank" class="nav-item"><span class="nav-icon">🌐</span><span
+                    class="nav-label">View Website</span></a>
+            <div class="nav-section-label">Insights</div>
+            <a class="nav-item" data-page="reports.html" href="reports.html"><span class="nav-icon">📈</span><span
+                    class="nav-label">Reports</span></a>
+            <a class="nav-item" data-page="settings.html" href="settings.html"><span class="nav-icon">⚙️</span><span
+                    class="nav-label">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer"><button class="sidebar-toggle"
+                id="sidebarToggle"><span>☰</span><span>Collapse</span></button></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <div>
+                    <div class="topbar-title">Inventory</div>
+                    <div class="topbar-subtitle">Materials, stock levels, and reorder alerts</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-date" id="todayDate"></div>
+                <button class="btn btn-primary btn-sm" onclick="openModal('addItemModal')">＋ Add Item</button>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="kpi-grid" id="invKpi"></div>
+
+            <div class="filters-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInv" placeholder="Search items…" oninput="renderInventory()">
+                </div>
+                <select class="form-control" style="width:auto" id="filterCat" onchange="renderInventory()">
+                    <option value="">All Categories</option>
+                    <option>Paper</option>
+                    <option>Ink</option>
+                    <option>Finishing</option>
+                    <option>Binding</option>
+                    <option>Printing Material</option>
+                </select>
+                <select class="form-control" style="width:auto" id="filterStock" onchange="renderInventory()">
+                    <option value="">All Stock</option>
+                    <option value="low">Low Stock Only</option>
+                    <option value="ok">In Stock</option>
+                </select>
+            </div>
+
+            <div class="card" style="padding:0">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Item Name</th>
+                                <th>Category</th>
+                                <th>Stock</th>
+                                <th>Unit</th>
+                                <th>Reorder Level</th>
+                                <th>Cost/Unit</th>
+                                <th>Stock Value</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT ITEM MODAL -->
+    <div class="modal-overlay" id="addItemModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="itemModalTitle">Add Inventory Item</h2>
+                <button class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editItemId">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Item Name *</label><input type="text"
+                            class="form-control" id="itemName" placeholder="Art Paper 130 GSM" required></div>
+                    <div class="form-group"><label class="form-label">Category *</label>
+                        <select class="form-control" id="itemCategory">
+                            <option>Paper</option>
+                            <option>Ink</option>
+                            <option>Finishing</option>
+                            <option>Binding</option>
+                            <option>Printing Material</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group"><label class="form-label">Quantity *</label><input type="number"
+                            class="form-control" id="itemQty" min="0" step="0.01" placeholder="500" required></div>
+                    <div class="form-group"><label class="form-label">Unit *</label><input type="text"
+                            class="form-control" id="itemUnit" placeholder="Sheets / Litres / Rolls"></div>
+                    <div class="form-group"><label class="form-label">Reorder Level *</label><input type="number"
+                            class="form-control" id="itemReorder" min="0" step="0.01" placeholder="100"></div>
+                </div>
+                <div class="form-group"><label class="form-label">Cost per Unit (₹)</label><input type="number"
+                        class="form-control" id="itemCost" min="0" step="0.01" placeholder="2.50"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addItemModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveItem()">💾 Save Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADJUST STOCK MODAL -->
+    <div class="modal-overlay" id="adjustStockModal">
+        <div class="modal" style="max-width:400px">
+            <div class="modal-header">
+                <h2 class="modal-title">Adjust Stock</h2>
+                <button class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="adjustItemId">
+                <p id="adjustItemName" style="font-weight:600;margin-bottom:16px;color:var(--accent-light)"></p>
+                <div class="form-group">
+                    <label class="form-label">Adjustment Type</label>
+                    <select class="form-control" id="adjustType">
+                        <option value="add">➕ Add Stock (Restock)</option>
+                        <option value="sub">➖ Deduct Stock (Usage)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" class="form-control" id="adjustQty" min="0" step="0.01" placeholder="50">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('adjustStockModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="applyAdjustment()">✅ Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/app.js"></script>
+    <script src="js/inventory.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintMaster Admin Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #0f172a;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-logo {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .login-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #f8fafc;
+        }
+
+        .login-sub {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #f8fafc;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+        <div class="login-logo">🖨️</div>
+        <div class="login-title">PrintMaster Press</div>
+        <div class="login-sub">Sign in to Admin Dashboard</div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label class="form-label">Secure Admin Email</label>
+                <input type="text" id="username" class="form-control" type="email" placeholder="admin@printmaster.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login">Sign In</button>
+            <div class="error-msg" id="errorMsg">Invalid credentials.</div>
+
+            <div style="margin-top: 20px; font-size: 13px; color: var(--muted);">
+                <a href="customer.html" style="color: var(--accent); text-decoration: none;">← Back to Website</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- High Security Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+        async function checkSession() {
+            if (!window.supabaseClient) return;
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (session) {
+                window.location.href = 'index.html';
+            }
+        }
+        checkSession();
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            const btn = document.querySelector('.btn-login');
+            btn.textContent = 'Authenticating securely...';
+            btn.disabled = true;
+
+            const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+                email: u,
+                password: p
+            });
+
+            if (error) {
+                const err = document.getElementById('errorMsg');
+                err.textContent = error.message || 'Invalid credentials.';
+                err.style.display = 'block';
+                setTimeout(() => err.style.display = 'none', 3000);
+                btn.textContent = 'Sign In';
+                btn.disabled = false;
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

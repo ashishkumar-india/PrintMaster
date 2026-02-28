@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customers — PrintMaster Press</title>
+    <meta name="description" content="Manage your printing press customers — directory, history, and contact info." />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">🖨️</div>
+            <div class="logo-text">PrintMaster<small>Press Manager</small></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Main</div>
+            <a class="nav-item" data-page="index.html" href="index.html"><span class="nav-icon">📊</span><span
+                    class="nav-label">Dashboard</span></a>
+            <a class="nav-item" data-page="orders.html" href="orders.html"><span class="nav-icon">📋</span><span
+                    class="nav-label">Orders</span></a>
+            <a class="nav-item" data-page="customers.html" href="customers.html"><span class="nav-icon">👥</span><span
+                    class="nav-label">Customers</span></a>
+            <div class="nav-section-label">Operations</div>
+            <a class="nav-item" data-page="inventory.html" href="inventory.html"><span class="nav-icon">📦</span><span
+                    class="nav-label">Inventory</span><span class="nav-badge" id="invBadge">0</span></a>
+            <a class="nav-item" data-page="billing.html" href="billing.html"><span class="nav-icon">🧾</span><span
+                    class="nav-label">Billing</span></a>
+            <div class="nav-section-label">Website</div>
+            <a class="nav-item" data-page="enquiries.html" href="enquiries.html"><span class="nav-icon">📩</span><span
+                    class="nav-label">Enquiries</span><span class="nav-badge" id="enqBadge"
+                    style="display:none">0</span></a>
+            <a href="customer.html" target="_blank" class="nav-item"><span class="nav-icon">🌐</span><span
+                    class="nav-label">View Website</span></a>
+            <div class="nav-section-label">Insights</div>
+            <a class="nav-item" data-page="reports.html" href="reports.html"><span class="nav-icon">📈</span><span
+                    class="nav-label">Reports</span></a>
+            <a class="nav-item" data-page="settings.html" href="settings.html"><span class="nav-icon">⚙️</span><span
+                    class="nav-label">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer"><button class="sidebar-toggle"
+                id="sidebarToggle"><span>☰</span><span>Collapse</span></button></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <div>
+                    <div class="topbar-title">Customers</div>
+                    <div class="topbar-subtitle">Manage your customer directory</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-date" id="todayDate"></div>
+                <button class="btn btn-primary btn-sm" onclick="openModal('addCustomerModal')">＋ Add Customer</button>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="stats-row" id="custStats"></div>
+            <div class="filters-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchCustomers" placeholder="Search by name, phone, email…"
+                        oninput="renderCustomers()">
+                </div>
+            </div>
+
+            <div class="grid-60-40">
+                <div class="card" style="padding:0">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Orders</th>
+                                    <th>Revenue</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card" id="customerDetailPanel">
+                    <div class="empty-state">
+                        <div class="empty-icon">👤</div>
+                        <p>Click a customer to see their order history</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT CUSTOMER MODAL -->
+    <div class="modal-overlay" id="addCustomerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="custModalTitle">Add Customer</h2>
+                <button class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editCustId">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Full Name *</label><input type="text"
+                            class="form-control" id="custName" placeholder="Amit Sharma" required></div>
+                    <div class="form-group"><label class="form-label">Phone *</label><input type="tel"
+                            class="form-control" id="custPhone" placeholder="98XXXXXXXX" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Email</label><input type="email"
+                            class="form-control" id="custEmail" placeholder="amit@example.com"></div>
+                    <div class="form-group"><label class="form-label">GST Number</label><input type="text"
+                            class="form-control" id="custGst" placeholder="27AABCU9603R1ZX"></div>
+                </div>
+                <div class="form-group"><label class="form-label">Address</label><textarea class="form-control"
+                        id="custAddress" placeholder="Street, City, State — PIN"></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addCustomerModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveCustomer()">💾 Save Customer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/app.js"></script>
+    <script src="js/customers.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PrintMaster Press — Quality Printing Services in Patna</title>
+    <meta name="description"
+        content="Professional printing services — business cards, pamphlets, banners, books and more. Fast delivery across Bihar." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #06090f;
+            --bg2: #0e1420;
+            --bg3: #141c2e;
+            --accent: #3b82f6;
+            --accent2: #7c3aed;
+            --gold: #f59e0b;
+            --success: #22c55e;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --glow: rgba(59, 130, 246, 0.2);
+            --r: 16px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 60px;
+            background: rgba(6, 9, 15, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .nav-logo .ico {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s;
+        }
+
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            box-shadow: 0 4px 14px var(--glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.45);
+        }
+
+        .btn-lg {
+            padding: 14px 32px;
+            font-size: 16px;
+            border-radius: 12px;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 30px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            font-size: 13px;
+            font-weight: 600;
+            color: #93c5fd;
+            margin-bottom: 28px;
+        }
+
+        .hero h1 {
+            font-size: clamp(38px, 6vw, 72px);
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 .grad {
+            background: linear-gradient(135deg, #93c5fd, #c4b5fd, #f9a8d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 540px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat strong {
+            display: block;
+            font-size: 30px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-stat span {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        /* SECTION */
+        section {
+            padding: 80px 60px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .section-sub {
+            font-size: 16px;
+            color: var(--muted);
+            max-width: 520px;
+            line-height: 1.7;
+        }
+
+        /* SERVICES */
+        .services {
+            background: var(--bg2);
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .services-header .section-sub {
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .service-card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 28px;
+            transition: all .3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-color, var(--accent));
+            border-radius: var(--r) var(--r) 0 0;
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .service-icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .service-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .service-card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .service-tag {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(59, 130, 246, 0.1);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* HOW IT WORKS */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 32px 20px;
+        }
+
+        .step-num {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 20px var(--glow);
+        }
+
+        .step h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .steps-connector {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            justify-content: center;
+        }
+
+        /* PRICING */
+        .pricing {
+            background: var(--bg2);
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .price-card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 32px;
+            text-align: center;
+            transition: all .3s;
+        }
+
+        .price-card.featured {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(124, 58, 237, 0.1));
+            border-color: rgba(59, 130, 246, 0.4);
+            position: relative;
+        }
+
+        .price-card.featured::after {
+            content: 'POPULAR';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            padding: 4px 14px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .price-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .price-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .price-amount {
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .price-amount small {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--muted);
+        }
+
+        .price-desc {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 12px 0 24px;
+        }
+
+        .price-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 28px;
+        }
+
+        .price-features li {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .price-features li:last-child {
+            border: none;
+        }
+
+        .price-features .ck {
+            color: var(--success);
+        }
+
+        /* GALLERY / PORTFOLIO */
+        .portfolio {}
+
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .portfolio-item {
+            border-radius: var(--r);
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, var(--c1, #1e3a5f), var(--c2, #1e1b4b));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all .3s;
+            position: relative;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .portfolio-item span {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+            color: var(--text);
+        }
+
+        .portfolio-item .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(59, 130, 246, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: .3s;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .portfolio-item:hover .overlay {
+            opacity: 1;
+        }
+
+        /* TESTIMONIALS */
+        .testimonials {
+            background: var(--bg2);
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .test-card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 28px;
+        }
+
+        .stars {
+            color: var(--gold);
+            font-size: 15px;
+            margin-bottom: 14px;
+        }
+
+        .test-card p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .test-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .test-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .test-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .test-role {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* CONTACT */
+        .contact {}
+
+        .contact-inner {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .contact-info h2 {
+            font-size: clamp(26px, 3.5vw, 40px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .contact-info p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .info-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .info-item strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .info-item span {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .contact-form {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 36px;
+        }
+
+        .contact-form h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: all .2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: #475569;
+        }
+
+        select.form-control option {
+            background: #141c2e;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .submit-feedback {
+            display: none;
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .submit-feedback.show.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            padding: 60px 60px 30px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 48px;
+        }
+
+        .footer-brand .nav-logo {
+            margin-bottom: 14px;
+        }
+
+        .footer-brand p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 240px;
+        }
+
+        /* SOCIAL ICONS */
+        .social-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            transition: all .25s;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--sg, rgba(59, 130, 246, 0.4));
+            border-color: var(--sc, var(--accent));
+        }
+
+        .social-link.fb {
+            --sc: #1877f2;
+            --sg: rgba(24, 119, 242, 0.35);
+        }
+
+        .social-link.ig {
+            --sc: #e1306c;
+            --sg: rgba(225, 48, 108, 0.35);
+        }
+
+        .social-link.wa {
+            --sc: #25d366;
+            --sg: rgba(37, 211, 102, 0.35);
+        }
+
+        .social-link.yt {
+            --sc: #ff0000;
+            --sg: rgba(255, 0, 0, 0.35);
+        }
+
+        .social-link.tw {
+            --sc: #1da1f2;
+            --sg: rgba(29, 161, 242, 0.35);
+        }
+
+        .social-link.li {
+            --sc: #0077b5;
+            --sg: rgba(0, 119, 181, 0.35);
+        }
+
+        .footer-col h4 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            padding: 5px 0;
+            transition: .2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--text);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .footer-bottom a {
+            color: var(--accent);
+        }
+
+        /* WHATSAPP FLOAT */
+        .wa-float {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 200;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5);
+            cursor: pointer;
+            transition: all .3s;
+            text-decoration: none;
+        }
+
+        .wa-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 32px rgba(37, 211, 102, 0.7);
+        }
+
+        .wa-float::before {
+            content: 'Order via WhatsApp';
+            position: absolute;
+            right: 66px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: .2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .wa-float:hover::before {
+            opacity: 1;
+        }
+
+        /* ADMIN LINK */
+        .admin-bar {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(124, 58, 237, 0.1));
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            color: #93c5fd;
+        }
+
+        .admin-bar a {
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:900px) {
+            nav {
+                padding: 14px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            section {
+                padding: 60px 20px;
+            }
+
+            .contact-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr 1fr;
+                gap: 28px;
+            }
+        }
+
+        @media(max-width:600px) {
+            .hero-stats {
+                gap: 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+        }
+
+        /* SCROLL ANIMATIONS */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Admin bar -->
+    <div class="admin-bar">
+        🔐 Staff? <a href="login.html">Go to Admin Dashboard →</a>
+    </div>
+
+    <!-- NAV -->
+    <nav id="navbar">
+        <div class="nav-logo">
+            <div class="ico">🖨️</div>
+            <span>PrintMaster</span>
+        </div>
+        <div class="nav-links">
+            <a href="#services">Services</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="nav-cta">
+            <a href="tel:9876543210" class="btn btn-outline">📞 Call Us</a>
+            <a href="#contact" class="btn btn-primary">Get Quote</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-content fade-in">
+            <div class="hero-badge">⚡ Fast Delivery · Quality Printing · Best Prices</div>
+            <h1>Premium Printing<br>For <span class="grad">Every Need</span></h1>
+            <p>From business cards to large banners — we deliver sharp, vibrant, and professional prints. Serving
+                businesses and individuals across Bihar since 2010.</p>
+            <div class="hero-btns">
+                <a href="#contact" class="btn btn-primary btn-lg">🖨️ Get a Free Quote</a>
+                <a href="#services" class="btn btn-outline btn-lg">View Services</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><strong>5000+</strong><span>Happy Customers</span></div>
+                <div class="hero-stat"><strong>15+</strong><span>Years Experience</span></div>
+                <div class="hero-stat"><strong>24hr</strong><span>Turnaround</span></div>
+                <div class="hero-stat"><strong>100%</strong><span>Satisfaction</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services" id="services">
+        <div class="services-header fade-in">
+            <div class="section-label">What We Offer</div>
+            <h2 class="section-title">Our Printing Services</h2>
+            <p class="section-sub">Professional quality printing for every type of business need — delivered fast.</p>
+        </div>
+        <div class="services-grid" id="dynServicesGrid">
+            <!-- Dynamic Services Load Here -->
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works">
+        <div class="fade-in">
+            <div class="section-label">Simple Process</div>
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-sub">Order your prints in 4 easy steps — no complications, no hassle.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step fade-in">
+                <div class="step-num">1</div>
+                <h3>Choose Service</h3>
+                <p>Pick the type of print job you need and tell us your requirements like quantity, size, and paper
+                    type.</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-num">2</div>
+                <h3>Share Design</h3>
+                <p>Send us your design files via WhatsApp or email. No design? Our team can create one for you!</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-num">3</div>
+                <h3>Get Quote & Approve</h3>
+                <p>Receive your quote instantly. Approve the proof and confirm the order with advance payment.</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-num">4</div>
+                <h3>Delivery / Pickup</h3>
+                <p>Ready in 24–48 hours. Collect from our shop or get delivery anywhere in Patna.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="pricing" id="pricing">
+        <div class="pricing-header fade-in">
+            <div class="section-label">Transparent Pricing</div>
+            <h2 class="section-title">Simple & Affordable</h2>
+            <p class="section-sub" style="margin:0 auto">No hidden charges. The price you see is the price you pay.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card fade-in">
+                <div class="price-label">Starter</div>
+                <div class="price-amount">₹500<small>/job</small></div>
+                <div class="price-desc">Perfect for small individual orders</div>
+                <ul class="price-features">
+                    <li><span class="ck">✅</span> Business Cards (250 pcs)</li>
+                    <li><span class="ck">✅</span> Pamphlets (100 pcs)</li>
+                    <li><span class="ck">✅</span> A4 Letterhead (50 sheets)</li>
+                    <li><span class="ck">✅</span> Standard Paper</li>
+                    <li><span class="ck">✅</span> 2–3 Day Delivery</li>
+                </ul>
+                <a href="#contact" class="btn btn-outline" style="width:100%;display:block;text-align:center">Get
+                    Quote</a>
+            </div>
+            <div class="price-card featured fade-in">
+                <div class="price-label">Business</div>
+                <div class="price-amount"
+                    style="background:linear-gradient(135deg,#93c5fd,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+                    ₹2,000<small style="-webkit-text-fill-color:var(--muted)">/job</small></div>
+                <div class="price-desc">Great for offices and small businesses</div>
+                <ul class="price-features">
+                    <li><span class="ck">✅</span> Business Cards (500 pcs)</li>
+                    <li><span class="ck">✅</span> Pamphlets (500 pcs)</li>
+                    <li><span class="ck">✅</span> Letterheads (500 sheets)</li>
+                    <li><span class="ck">✅</span> Premium Paper + Lamination</li>
+                    <li><span class="ck">✅</span> 24hr Priority Delivery</li>
+                    <li><span class="ck">✅</span> Free Design Assistance</li>
+                </ul>
+                <a href="#contact" class="btn btn-primary" style="width:100%;display:block;text-align:center">Get
+                    Quote</a>
+            </div>
+            <div class="price-card fade-in">
+                <div class="price-label">Enterprise</div>
+                <div class="price-amount">Custom</div>
+                <div class="price-desc">For large institutions, schools, hospitals</div>
+                <ul class="price-features">
+                    <li><span class="ck">✅</span> Bulk order discounts</li>
+                    <li><span class="ck">✅</span> Dedicated account manager</li>
+                    <li><span class="ck">✅</span> GST invoice provided</li>
+                    <li><span class="ck">✅</span> Credit terms available</li>
+                    <li><span class="ck">✅</span> Priority queue</li>
+                    <li><span class="ck">✅</span> Free doorstep delivery</li>
+                </ul>
+                <a href="tel:9876543210" class="btn btn-gold" style="width:100%;display:block;text-align:center">📞 Call
+                    to Discuss</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio">
+        <div class="portfolio-header fade-in">
+            <div>
+                <div class="section-label">Our Work</div>
+                <h2 class="section-title">Sample Prints</h2>
+            </div>
+            <a href="#contact" class="btn btn-primary">Order Similar</a>
+        </div>
+        <div class="portfolio-grid" id="dynPortfolioGrid">
+            <!-- Dynamic Portfolio Items Load Here -->
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials" id="testimonials">
+        <div class="fade-in" style="text-align:center;margin-bottom:0">
+            <div class="section-label">Reviews</div>
+            <h2 class="section-title">What Our Customers Say</h2>
+        </div>
+        <div class="test-grid">
+            <div class="test-card fade-in">
+                <div class="stars">★★★★★</div>
+                <p>"Excellent quality business cards! The matte lamination finish looked absolutely premium. Got 500
+                    cards in less than 24 hours. Highly recommended!"</p>
+                <div class="test-author">
+                    <div class="test-avatar">A</div>
+                    <div>
+                        <div class="test-name">Amit Sharma</div>
+                        <div class="test-role">Entrepreneur, Patna</div>
+                    </div>
+                </div>
+            </div>
+            <div class="test-card fade-in">
+                <div class="stars">★★★★★</div>
+                <p>"We ordered 2000 tri-fold pamphlets for our business launch. The colours were vibrant and the paper
+                    quality was great. Delivered on time as promised!"</p>
+                <div class="test-author">
+                    <div class="test-avatar">P</div>
+                    <div>
+                        <div class="test-name">Priya Enterprises</div>
+                        <div class="test-role">FMCG Company, Gaya</div>
+                    </div>
+                </div>
+            </div>
+            <div class="test-card fade-in">
+                <div class="stars">★★★★★</div>
+                <p>"Got 300 books printed for our students with perfect binding. The print quality was crisp and the
+                    pricing was very competitive. Will order again!"</p>
+                <div class="test-author">
+                    <div class="test-avatar">S</div>
+                    <div>
+                        <div class="test-name">Sunrise School</div>
+                        <div class="test-role">Educational Institution, Nalanda</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="contact-inner">
+            <div class="contact-info fade-in">
+                <div class="section-label">Get In Touch</div>
+                <h2>Ready to Print?<br>Let's Talk!</h2>
+                <p>Fill in the form and we'll get back to you with a price quote within 1 hour during business hours. Or
+                    call us directly!</p>
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div><strong>Visit Us</strong><span>IIT Patna, Bihta, Bihar — 801103</span></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">📞</div>
+                    <div><strong>Call / WhatsApp</strong><span><a href="tel:9876543210" style="color:var(--accent)">+91
+                                98765 43210</a></span></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">✉️</div>
+                    <div><strong>Email Us</strong><span><a href="mailto:info@printmaster.in"
+                                style="color:var(--accent)">info@printmaster.in</a></span></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">🕐</div>
+                    <div><strong>Business Hours</strong><span>Mon–Sat: 9:00 AM – 8:00 PM</span></div>
+                </div>
+            </div>
+            <div class="contact-form fade-in">
+                <h3>📋 Request a Quote</h3>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Your Name *</label><input type="text"
+                            class="form-control" id="cName" placeholder="Amit Sharma"></div>
+                    <div class="form-group"><label class="form-label">Phone / WhatsApp *</label><input type="tel"
+                            class="form-control" id="cPhone" placeholder="98XXXXXXXX"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Email</label><input type="email"
+                            class="form-control" id="cEmail" placeholder="you@email.com"></div>
+                    <div class="form-group"><label class="form-label">Service Required</label>
+                        <select class="form-control" id="cService">
+                            <!-- Dynamic Services Load Here -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"><label class="form-label">Quantity</label><input type="text"
+                        class="form-control" id="cQty" placeholder="e.g. 500 cards, 1000 pamphlets"></div>
+                <div class="form-group"><label class="form-label">Additional Details</label><textarea
+                        class="form-control" id="cMsg" rows="3"
+                        placeholder="Paper type, size, special requirements, deadline…"></textarea></div>
+                <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px"
+                    onclick="submitQuote()">🚀 Send Quote Request</button>
+                <div class="submit-feedback" id="submitFeedback"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-top">
+            <div class="footer-brand">
+                <div class="nav-logo">
+                    <div class="ico">🖨️</div><span>PrintMaster</span>
+                </div>
+                <p>Quality printing services for businesses and individuals across Bihar. Fast, affordable, and
+                    professional.</p>
+                <div class="social-links">
+                    <a class="social-link fb" href="https://facebook.com" target="_blank" title="Facebook">&#128217;</a>
+                    <a class="social-link ig" href="https://instagram.com" target="_blank"
+                        title="Instagram">&#128248;</a>
+                    <a class="social-link wa" href="https://wa.me/919876543210" target="_blank"
+                        title="WhatsApp">&#128172;</a>
+                    <a class="social-link yt" href="https://youtube.com" target="_blank"
+                        title="YouTube">&#9654;&#65039;</a>
+                    <a class="social-link tw" href="https://twitter.com" target="_blank" title="Twitter">&#128038;</a>
+                    <a class="social-link li" href="https://linkedin.com" target="_blank" title="LinkedIn">&#128188;</a>
+                </div>
+            </div>
+            <div class="footer-col" id="dynFooterServices">
+                <h4>SERVICES</h4>
+                <!-- Dynamic Services Load Here -->
+            </div>
+            <div class="footer-col">
+                <h4>COMPANY</h4>
+                <a href="#home">About Us</a>
+                <a href="#portfolio">Our Work</a>
+                <a href="#testimonials">Reviews</a>
+                <a href="#contact">Contact</a>
+                <a href="login.html">Admin Login</a>
+            </div>
+            <div class="footer-col">
+                <h4>CONTACT</h4>
+                <a href="tel:9876543210">📞 98765 43210</a>
+                <a href="mailto:info@printmaster.in">✉️ info@printmaster.in</a>
+                <a href="#contact">📍 IIT Patna, Bihar</a>
+                <a href="#">🕐 Mon–Sat 9AM–8PM</a>
+            </div>
+        </div>
+        <div
+            style="display:flex;justify-content:center;gap:12px;padding:24px 0;border-top:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap">
+            <a class="social-link fb" href="https://facebook.com" target="_blank" title="Facebook"
+                style="width:46px;height:46px;font-size:20px">&#128217;</a>
+            <a class="social-link ig" href="https://instagram.com" target="_blank" title="Instagram"
+                style="width:46px;height:46px;font-size:20px">&#128248;</a>
+            <a class="social-link wa" href="https://wa.me/919876543210" target="_blank" title="WhatsApp"
+                style="width:46px;height:46px;font-size:20px">&#128172;</a>
+            <a class="social-link yt" href="https://youtube.com" target="_blank" title="YouTube"
+                style="width:46px;height:46px;font-size:20px">&#9654;&#65039;</a>
+            <a class="social-link tw" href="https://twitter.com" target="_blank" title="Twitter"
+                style="width:46px;height:46px;font-size:20px">&#128038;</a>
+            <a class="social-link li" href="https://linkedin.com" target="_blank" title="LinkedIn"
+                style="width:46px;height:46px;font-size:20px">&#128188;</a>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 PrintMaster Press. All rights reserved.</span>
+            <span>Follow us &nbsp;&middot;&nbsp;
+                <a href="https://facebook.com" target="_blank" style="color:var(--accent)">Facebook</a>
+                &nbsp;&middot;&nbsp;
+                <a href="https://instagram.com" target="_blank" style="color:var(--accent)">Instagram</a>
+                &nbsp;&middot;&nbsp;
+                <a href="login.html">Staff Login</a>
+            </span>
+        </div>
+    </footer>
+
+    <!-- WhatsApp FAB -->
+    <a class="wa-float" href="https://wa.me/919876543210?text=Hi%2C%20I%20need%20printing%20services" target="_blank"
+        title="Order via WhatsApp">
+        <svg xmlns="http://www.w3.org/Dom/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+        </svg>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+        // Scroll animation
+        const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+        // Sticky nav shadow
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').style.boxShadow = window.scrollY > 20 ? '0 4px 30px rgba(0,0,0,0.5)' : 'none';
+        });
+
+        // Quote form
+        function submitQuote() {
+            const name = document.getElementById('cName').value.trim();
+            const phone = document.getElementById('cPhone').value.trim();
+            if (!name || !phone) { alert('Please enter your name and phone number.'); return; }
+            const service = document.getElementById('cService').value;
+            const qty = document.getElementById('cQty').value;
+            const msg = document.getElementById('cMsg').value;
+            // Save enquiry to Supabase (viewable by admin)
+            const newEnquiry = { name, phone, email: document.getElementById('cEmail').value, service, qty, msg, date: new Date().toISOString(), status: 'New' };
+            if (window.supabaseClient) {
+                window.supabaseClient.from('enquiries').insert([newEnquiry]).then(() => console.log('Enquiry sent to DB')).catch(e => console.error(e));
+            }
+            // WhatsApp redirect
+            const wa = `https://wa.me/919876543210?text=Hi!%20I%20need%20*${encodeURIComponent(service)}*%0AName%3A%20${encodeURIComponent(name)}%0AQty%3A%20${encodeURIComponent(qty || 'TBD')}%0ADetails%3A%20${encodeURIComponent(msg || '—')}`;
+            const fb = document.getElementById('submitFeedback');
+            fb.className = 'submit-feedback show success';
+            fb.textContent = '✅ Request submitted! Redirecting to WhatsApp…';
+            ['cName', 'cPhone', 'cEmail', 'cQty', 'cMsg'].forEach(id => document.getElementById(id).value = '');
+            setTimeout(() => window.open(wa, '_blank'), 1200);
+        }
+
+
+        // Load Dynamic Services
+        async function loadServices() {
+            let services = [
+                { name: 'Business Cards', icon: '💼', description: 'Premium business cards with matte, glossy, or UV coating. Rounded corners, spot UV, and custom finishes available.', price: 'From ₹500/250 cards', color: '#3b82f6' },
+                { name: 'Pamphlets & Flyers', icon: '📄', description: 'Eye-catching pamphlets for promotions, events, and marketing. Single-fold, bi-fold, and tri-fold options.', price: 'From ₹2/piece', color: '#22c55e' },
+                { name: 'Banners & Flex', icon: '🏳️', description: 'Large format outdoor flex banners for shops, events, and exhibitions. Weather-resistant & vibrant colors.', price: 'From ₹40/sq.ft', color: '#f59e0b' },
+                { name: 'Books & Notebooks', icon: '📚', description: 'Perfect binding, spiral binding, and saddle-stitching for books, manuals, catalogs, and notebooks.', price: 'Custom pricing', color: '#a78bfa' },
+                { name: 'Letterheads & Pads', icon: '🏷️', description: 'Professional letterheads, note pads, prescription pads with your logo and brand colors. Bulk discounts available.', price: 'From ₹1.5/sheet', color: '#06b6d4' },
+                { name: 'Custom Printing', icon: '🎨', description: 'Stickers, envelopes, calendars, wedding cards, invitation cards, certificates — you name it, we print it!', price: 'Contact for pricing', color: '#ec4899' }
+            ];
+
+            if (window.supabaseClient) {
+                try {
+                    const { data, error } = await window.supabaseClient.from('services').select('*').order('id', { ascending: true });
+                    if (!error && data && data.length > 0) {
+                        services = data;
+                    }
+                } catch (e) { console.error(e); }
+            }
+
+            const grid = document.getElementById('dynServicesGrid');
+            if (grid) {
+                grid.innerHTML = services.map(s => `
+                    <div class="service-card fade-in" style="--card-color:${s.color}">
+                        <div class="service-icon">${s.icon || '💼'}</div>
+                        <h3>${s.name}</h3>
+                        <p>${s.description || ''}</p>
+                        <span class="service-tag">${s.price || ''}</span>
+                    </div>
+                `).join('');
+                setTimeout(() => document.querySelectorAll('#dynServicesGrid .fade-in').forEach(el => obs.observe(el)), 50);
+            }
+
+            const select = document.getElementById('cService');
+            if (select) {
+                select.innerHTML = services.map(s => `<option value="${s.name}">${s.name}</option>`).join('') + '<option value="Other">Other</option>';
+            }
+
+
+            // Load Portfolio
+            let portfolio = [
+                { title: 'Corporate Mugs', icon: '☕', color1: '#ea580c', color2: '#9a3412' },
+                { title: 'Event Banners', icon: '🏳️', color1: '#3b82f6', color2: '#1d4ed8' },
+                { title: 'Premium ID Cards', icon: '💳', color1: '#10b981', color2: '#047857' },
+                { title: 'Custom T-Shirts', icon: '👕', color1: '#8b5cf6', color2: '#5b21b6' },
+                { title: 'Restaurant Menus', icon: '📖', color1: '#f59e0b', color2: '#b45309' },
+                { title: 'Wedding Cards', icon: '💌', color1: '#ec4899', color2: '#be185d' }
+            ];
+
+            if (window.supabaseClient) {
+                try {
+                    const { data, error } = await window.supabaseClient.from('portfolio').select('*').order('id', { ascending: true });
+                    if (!error && data && data.length > 0) {
+                        portfolio = data;
+                    }
+                } catch (e) { console.error(e); }
+            }
+
+            const pGrid = document.getElementById('dynPortfolioGrid');
+            if (pGrid) {
+                pGrid.innerHTML = portfolio.map(p => `
+                    <div class="portfolio-item fade-in" style="--c1:${p.color1 || '#1e3a5f'};--c2:${p.color2 || '#1e1b4b'}">
+                        ${p.icon || '🖼️'}
+                        <span>${p.title}</span>
+                        <div class="overlay">Request Quote</div>
+                    </div>
+                `).join('');
+                setTimeout(() => document.querySelectorAll('#dynPortfolioGrid .fade-in').forEach(el => obs.observe(el)), 50);
+                setTimeout(() => document.querySelectorAll('.portfolio-item').forEach(el => el.addEventListener('click', () => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' }))), 100);
+            }
+
+            const ft = document.getElementById('dynFooterServices');
+            if (ft) {
+                ft.innerHTML = '<h4>SERVICES</h4>' + services.slice(0, 5).map(s => `<a href="#services">${s.name}</a>`).join('');
+            }
+        }
+        loadServices();
+
+        // Portfolio items link to contact
+        document.querySelectorAll('.portfolio-item').forEach(el => el.addEventListener('click', () => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })));
+    </script>
+</body>
+
+</html>

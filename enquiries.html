@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enquiries — PrintMaster Press</title>
+    <meta name="description" content="Customer quote requests and enquiries submitted via the website." />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">🖨️</div>
+            <div class="logo-text">PrintMaster<small>Press Manager</small></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Main</div>
+            <a class="nav-item" data-page="index.html" href="index.html"><span class="nav-icon">📊</span><span
+                    class="nav-label">Dashboard</span></a>
+            <a class="nav-item" data-page="orders.html" href="orders.html"><span class="nav-icon">📋</span><span
+                    class="nav-label">Orders</span></a>
+            <a class="nav-item" data-page="customers.html" href="customers.html"><span class="nav-icon">👥</span><span
+                    class="nav-label">Customers</span></a>
+            <div class="nav-section-label">Operations</div>
+            <a class="nav-item" data-page="inventory.html" href="inventory.html"><span class="nav-icon">📦</span><span
+                    class="nav-label">Inventory</span><span class="nav-badge" id="invBadge">0</span></a>
+            <a class="nav-item" data-page="billing.html" href="billing.html"><span class="nav-icon">🧾</span><span
+                    class="nav-label">Billing</span></a>
+            <div class="nav-section-label">Website</div>
+            <a class="nav-item" data-page="enquiries.html" href="enquiries.html"><span class="nav-icon">📩</span><span
+                    class="nav-label">Enquiries</span><span class="nav-badge" id="enqBadge">0</span></a>
+            <a href="customer.html" target="_blank" class="nav-item"><span class="nav-icon">🌐</span><span
+                    class="nav-label">View Website</span></a>
+            <div class="nav-section-label">Insights</div>
+            <a class="nav-item" data-page="reports.html" href="reports.html"><span class="nav-icon">📈</span><span
+                    class="nav-label">Reports</span></a>
+            <a class="nav-item" data-page="settings.html" href="settings.html"><span class="nav-icon">⚙️</span><span
+                    class="nav-label">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer"><button class="sidebar-toggle"
+                id="sidebarToggle"><span>☰</span><span>Collapse</span></button></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <div>
+                    <div class="topbar-title">Customer Enquiries</div>
+                    <div class="topbar-subtitle">Quote requests submitted via your website</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-date" id="todayDate"></div>
+                <a href="customer.html" target="_blank" class="btn btn-secondary btn-sm">🌐 View Website</a>
+                <button class="btn btn-primary btn-sm" onclick="clearAll()">🗑️ Clear All</button>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- KPI -->
+            <div class="kpi-grid" id="enqKpi"></div>
+
+            <!-- Filter bar -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchEnq" placeholder="Search by name, phone, service…"
+                        oninput="renderEnquiries()">
+                </div>
+                <select class="form-control" style="width:auto" id="filterEnqStatus" onchange="renderEnquiries()">
+                    <option value="">All Status</option>
+                    <option>New</option>
+                    <option>Contacted</option>
+                    <option>Converted</option>
+                    <option>Closed</option>
+                </select>
+            </div>
+
+            <div class="grid-60-40">
+                <!-- Table -->
+                <div class="card" style="padding:0">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Service</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="enqTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Detail panel -->
+                <div class="card" id="enqDetailPanel">
+                    <div class="empty-state">
+                        <div class="empty-icon">📩</div>
+                        <p>Click an enquiry to see full details</p>
+                        <a href="customer.html" target="_blank" class="btn btn-primary">Visit Customer Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONVERT TO ORDER MODAL -->
+    <div class="modal-overlay" id="convertModal">
+        <div class="modal" style="max-width:480px">
+            <div class="modal-header">
+                <h2 class="modal-title">Convert to Order</h2>
+                <button class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px">This will create a new Order
+                    from the enquiry details and add the customer (if not already existing).</p>
+                <input type="hidden" id="convertEnqId">
+                <div class="form-group"><label class="form-label">Deadline</label><input type="date"
+                        class="form-control" id="convertDeadline"></div>
+                <div class="form-group"><label class="form-label">Estimated Amount (₹)</label><input type="number"
+                        class="form-control" id="convertAmount" placeholder="0"></div>
+                <div class="form-group"><label class="form-label">Assigned To</label><input type="text"
+                        class="form-control" id="convertAssigned" placeholder="Rahul"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('convertModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="doConvert()">✅ Create Order</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/app.js"></script>
+    <script src="js/enquiries.js"></script>
+</body>
+
+</html>

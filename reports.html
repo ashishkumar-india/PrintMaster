@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reports — PrintMaster Press</title>
+    <meta name="description"
+        content="Analytics and reports for your printing press — revenue, orders, top customers." />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">🖨️</div>
+            <div class="logo-text">PrintMaster<small>Press Manager</small></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Main</div>
+            <a class="nav-item" data-page="index.html" href="index.html"><span class="nav-icon">📊</span><span
+                    class="nav-label">Dashboard</span></a>
+            <a class="nav-item" data-page="orders.html" href="orders.html"><span class="nav-icon">📋</span><span
+                    class="nav-label">Orders</span></a>
+            <a class="nav-item" data-page="customers.html" href="customers.html"><span class="nav-icon">👥</span><span
+                    class="nav-label">Customers</span></a>
+            <div class="nav-section-label">Operations</div>
+            <a class="nav-item" data-page="inventory.html" href="inventory.html"><span class="nav-icon">📦</span><span
+                    class="nav-label">Inventory</span><span class="nav-badge" id="invBadge">0</span></a>
+            <a class="nav-item" data-page="billing.html" href="billing.html"><span class="nav-icon">🧾</span><span
+                    class="nav-label">Billing</span></a>
+            <div class="nav-section-label">Website</div>
+            <a class="nav-item" data-page="enquiries.html" href="enquiries.html"><span class="nav-icon">📩</span><span
+                    class="nav-label">Enquiries</span><span class="nav-badge" id="enqBadge"
+                    style="display:none">0</span></a>
+            <a href="customer.html" target="_blank" class="nav-item"><span class="nav-icon">🌐</span><span
+                    class="nav-label">View Website</span></a>
+            <div class="nav-section-label">Insights</div>
+            <a class="nav-item" data-page="reports.html" href="reports.html"><span class="nav-icon">📈</span><span
+                    class="nav-label">Reports</span></a>
+            <a class="nav-item" data-page="settings.html" href="settings.html"><span class="nav-icon">⚙️</span><span
+                    class="nav-label">Settings</span></a>
+        </nav>
+        <div class="sidebar-footer"><button class="sidebar-toggle"
+                id="sidebarToggle"><span>☰</span><span>Collapse</span></button></div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <div>
+                    <div class="topbar-title">Reports & Analytics</div>
+                    <div class="topbar-subtitle">Business insights and data exports</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-date" id="todayDate"></div>
+                <button class="btn btn-secondary btn-sm" onclick="exportCSV()">⬇️ Export CSV</button>
+            </div>
+        </div>
+        <div class="page-content">
+            <!-- Date Range Filter -->
+            <div class="card" style="margin-bottom:20px;padding:14px 20px">
+                <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+                    <span style="font-weight:600;font-size:14px">Date Range:</span>
+                    <button class="btn btn-secondary btn-sm" onclick="setRange('month')" id="rangeMonth">This
+                        Month</button>
+                    <button class="btn btn-secondary btn-sm" onclick="setRange('quarter')" id="rangeQuarter">This
+                        Quarter</button>
+                    <button class="btn btn-secondary btn-sm" onclick="setRange('year')" id="rangeYear">This
+                        Year</button>
+                    <button class="btn btn-secondary btn-sm" onclick="setRange('all')" id="rangeAll">All Time</button>
+                    <span style="color:var(--text-muted);margin-left:auto;font-size:13px" id="rangeLabel"></span>
+                </div>
+            </div>
+
+            <!-- KPI row -->
+            <div class="kpi-grid" id="reportKpi"></div>
+
+            <!-- Charts -->
+            <div class="grid-60-40" style="margin-bottom:24px">
+                <div class="card">
+                    <div class="section-header">
+                        <div class="section-title">Revenue by Month</div>
+                    </div>
+                    <canvas id="monthlyChart" height="220"></canvas>
+                </div>
+                <div class="card">
+                    <div class="section-header">
+                        <div class="section-title">Orders by Job Type</div>
+                    </div>
+                    <canvas id="jobTypeChart" height="220"></canvas>
+                </div>
+            </div>
+
+            <!-- Tables -->
+            <div class="grid-2">
+                <div class="card">
+                    <div class="section-header">
+                        <div class="section-title">Top Customers by Revenue</div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Customer</th>
+                                    <th>Orders</th>
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topCustTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-header">
+                        <div class="section-title">Orders Summary</div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Count</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderSumTable"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:20px">
+                        <div class="section-title" style="margin-bottom:12px">Payment Collection</div>
+                        <div id="paymentSummary" style="display:flex;flex-direction:column;gap:10px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/app.js"></script>
+    <script src="js/reports.js"></script>
+</body>
+
+</html>
