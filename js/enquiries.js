@@ -111,7 +111,7 @@ function showDetail(id) {
 
     <div style="display:flex;flex-direction:column;gap:10px">
       <a href="tel:${e.phone}" class="btn btn-primary">📞 Call ${e.name.split(' ')[0]}</a>
-      <a href="https://wa.me/91${e.phone}?text=Hi%20${encodeURIComponent(e.name.split(' ')[0])}%2C%20thank%20you%20for%20contacting%20PrintMaster%20Press!%20Regarding%20your%20enquiry%20for%20${encodeURIComponent(e.service || 'printing')}%2C%20we%27d%20be%20happy%20to%20assist." target="_blank" class="btn btn-success">💬 WhatsApp Reply</a>
+      <a href="https://wa.me/91${e.phone}?text=Hi%20${encodeURIComponent(e.name.split(' ')[0])}%2C%20thank%20you%20for%20contacting%20Star%20Xerox!%20Regarding%20your%20enquiry%20for%20${encodeURIComponent(e.service || 'printing')}%2C%20we%27d%20be%20happy%20to%20assist." target="_blank" class="btn btn-success">💬 WhatsApp Reply</a>
       <button class="btn btn-secondary" onclick="openConvert(${e.id})">📋 Convert to Order</button>
     </div>
   `;

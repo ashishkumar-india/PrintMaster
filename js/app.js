@@ -112,9 +112,9 @@ function seedData() {
   if (localStorage.getItem('pp_seeded')) return;
 
   const settings = {
-    shopName: 'PrintMaster Press', ownerName: 'Rajesh Kumar',
-    address: 'IIT Patna, Bihar — 801103', phone: '7654064878',
-    email: 'info@printmaster.in', gst: '10AABCU9603R1Z1',
+    shopName: 'Star Xerox', ownerName: 'Ashish Kumar',
+    address: 'Bihta, Near Railway Station', phone: '9162141111',
+    email: 'starxerox@gmail.com', gst: '',
     currency: '₹', taxRate: 18, dateFormat: 'DD/MM/YYYY'
   };
   DB.set('settings', settings);

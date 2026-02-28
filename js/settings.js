@@ -34,7 +34,7 @@ function saveSettings() {
 
 function updatePreview() {
   const s = {
-    shopName: document.getElementById('settShopName').value || 'PrintMaster Press',
+    shopName: document.getElementById('settShopName').value || 'Star Xerox',
     ownerName: document.getElementById('settOwnerName').value || '',
     phone: document.getElementById('settPhone').value || '',
     email: document.getElementById('settEmail').value || '',

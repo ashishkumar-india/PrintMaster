@@ -85,7 +85,7 @@ CREATE TABLE settings (
 
 -- Seed Initial Settings
 INSERT INTO settings ("shopName", "ownerName", phone, email, address, gst, "taxRate", currency, terms)
-VALUES ('PrintMaster Press', 'Rajesh Kumar', '7654064878', 'info@printmaster.in', 'IIT Patna, Bihar — 801103', '10AABCU9603R1Z1', 18, '₹', 'Goods once sold will not be returned.')
+VALUES ('Star Xerox', 'Ashish Kumar', '9162141111', 'starxerox@gmail.com', 'Bihta, Near Railway Station', '', 18, '₹', 'Goods once sold will not be returned.')
 ON CONFLICT (id) DO NOTHING;
 
 -- Disable Row Level Security (RLS) for ease of MVP development
