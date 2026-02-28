@@ -176,9 +176,6 @@ function initNav() {
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
-      toggleBtn.innerHTML = sidebar.classList.contains('collapsed')
-        ? '<span>&#9776;</span>'
-        : '<span>&#9776;</span><span>Collapse</span>';
     });
   }
 
@@ -191,7 +188,7 @@ function initNav() {
     logoutLink.className = 'nav-item';
     logoutLink.style.marginTop = '20px';
     logoutLink.style.color = 'var(--danger)';
-    logoutLink.innerHTML = '<span class="nav-icon">🚪</span><span class="nav-label">Logout</span>';
+    logoutLink.innerHTML = '<span class="nav-icon">←</span><span class="nav-label">Logout</span>';
     logoutLink.onclick = (e) => { e.preventDefault(); logout(); };
     sidemenu.appendChild(logoutLink);
   }
