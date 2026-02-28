@@ -1149,7 +1149,7 @@ canvas {
     margin-left: var(--sidebar-w-col);
   }
 
-  .sidebar-toggle span {
+  .sidebar-toggle span:last-child {
     display: none;
   }
 
