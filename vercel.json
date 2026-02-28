@@ -12,6 +12,10 @@
         {
             "src": "js/**/*.js",
             "use": "@vercel/static"
+        },
+        {
+            "src": "img/**/*",
+            "use": "@vercel/static"
         }
     ],
     "redirects": [
