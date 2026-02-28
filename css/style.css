@@ -266,6 +266,11 @@ img {
 .sidebar-footer {
   padding: 16px;
   border-top: 1px solid var(--border);
+  transition: padding var(--transition);
+}
+
+.sidebar.collapsed .sidebar-footer {
+  padding: 16px 8px;
 }
 
 .sidebar-toggle {
@@ -291,6 +296,7 @@ img {
 
 .sidebar.collapsed .sidebar-toggle {
   padding: 10px 0;
+  width: 100%;
 }
 
 .sidebar-toggle:hover {
