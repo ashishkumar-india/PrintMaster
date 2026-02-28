@@ -2,36 +2,36 @@
 'use strict';
 
 function renderOrders() {
-    const orders = DB.get('orders');
-    const q = document.getElementById('searchOrders').value.toLowerCase();
-    const st = document.getElementById('filterStatus').value;
-    const jt = document.getElementById('filterJob').value;
+  const orders = DB.get('orders');
+  const q = document.getElementById('searchOrders').value.toLowerCase();
+  const st = document.getElementById('filterStatus').value;
+  const jt = document.getElementById('filterJob').value;
 
-    const filtered = orders.filter(o =>
-        (!q || o.customerName.toLowerCase().includes(q) || o.jobType.toLowerCase().includes(q) || String(o.id).includes(q)) &&
-        (!st || o.status === st) &&
-        (!jt || o.jobType === jt)
-    ).sort((a, b) => b.id - a.id);
+  const filtered = orders.filter(o =>
+    (!q || o.customerName.toLowerCase().includes(q) || o.jobType.toLowerCase().includes(q) || String(o.id).includes(q)) &&
+    (!st || o.status === st) &&
+    (!jt || o.jobType === jt)
+  ).sort((a, b) => b.id - a.id);
 
-    const statuses = ['Pending', 'In Progress', 'Ready', 'Delivered'];
-    const stats = document.getElementById('orderStats');
-    if (stats) {
-        stats.innerHTML = statuses.map(s => {
-            const cnt = orders.filter(o => o.status === s).length;
-            const colors = { 'Pending': '#f59e0b', 'In Progress': '#06b6d4', 'Ready': '#a78bfa', 'Delivered': '#22c55e' };
-            return `<div class="stat-pill"><span style="width:8px;height:8px;border-radius:50%;background:${colors[s]};display:inline-block"></span><span style="color:var(--text-secondary)">${s}</span><strong>${cnt}</strong></div>`;
-        }).join('');
-    }
+  const statuses = ['Pending', 'In Progress', 'Ready', 'Delivered'];
+  const stats = document.getElementById('orderStats');
+  if (stats) {
+    stats.innerHTML = statuses.map(s => {
+      const cnt = orders.filter(o => o.status === s).length;
+      const colors = { 'Pending': '#f59e0b', 'In Progress': '#06b6d4', 'Ready': '#a78bfa', 'Delivered': '#22c55e' };
+      return `<div class="stat-pill"><span style="width:8px;height:8px;border-radius:50%;background:${colors[s]};display:inline-block"></span><span style="color:var(--text-secondary)">${s}</span><strong>${cnt}</strong></div>`;
+    }).join('');
+  }
 
-    const tbl = document.getElementById('ordersTable');
-    if (!tbl) return;
+  const tbl = document.getElementById('ordersTable');
+  if (!tbl) return;
 
-    if (!filtered.length) {
-        tbl.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📋</div><p>No orders found</p><button class="btn btn-primary" onclick="openModal('addOrderModal')">Create First Order</button></div></td></tr>`;
-        return;
-    }
+  if (!filtered.length) {
+    tbl.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📋</div><p>No orders found</p><button class="btn btn-primary" onclick="openModal('addOrderModal')">Create First Order</button></div></td></tr>`;
+    return;
+  }
 
-    tbl.innerHTML = filtered.map(o => `
+  tbl.innerHTML = filtered.map(o => `
     <tr>
       <td><strong style="color:var(--accent-light)">#${o.id}</strong></td>
       <td style="font-size:12px;color:var(--text-secondary)">${formatDate(o.createdAt)}</td>
@@ -54,97 +54,101 @@ function renderOrders() {
 }
 
 function populateCustomerDropdown(selectId, selectedId = null) {
-    const sel = document.getElementById(selectId);
-    if (!sel) return;
-    const customers = DB.get('customers');
-    sel.innerHTML = customers.length
-        ? customers.map(c => `<option value="${c.id}" ${c.id == selectedId ? 'selected' : ''}>${c.name}</option>`).join('')
-        : `<option value="">No customers yet</option>`;
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+  const customers = DB.get('customers');
+  sel.innerHTML = customers.length
+    ? customers.map(c => `<option value="${c.id}" ${c.id == selectedId ? 'selected' : ''}>${c.name}</option>`).join('')
+    : `<option value="">No customers yet</option>`;
 }
 
-function saveOrder() {
-    const id = document.getElementById('editOrderId').value;
-    const customers = DB.get('customers');
-    const custId = parseInt(document.getElementById('orderCustomer').value);
-    const cust = customers.find(c => c.id === custId);
-    if (!cust) { toast('Please select a customer', 'error'); return; }
+async function saveOrder() {
+  const id = document.getElementById('editOrderId').value;
+  const customers = DB.get('customers');
+  const custId = parseInt(document.getElementById('orderCustomer').value);
+  const cust = customers.find(c => c.id === custId);
+  if (!cust) { toast('Please select a customer', 'error'); return; }
 
-    const qty = parseInt(document.getElementById('orderQty').value);
-    const amount = parseFloat(document.getElementById('orderAmount').value);
-    const deadline = document.getElementById('orderDeadline').value;
+  const qty = parseInt(document.getElementById('orderQty').value);
+  const amount = parseFloat(document.getElementById('orderAmount').value);
+  const deadline = document.getElementById('orderDeadline').value;
 
-    if (!qty || !amount || !deadline) { toast('Please fill all required fields', 'error'); return; }
+  if (!qty || !amount || !deadline) { toast('Please fill all required fields', 'error'); return; }
 
-    const orders = DB.get('orders');
-    const now = new Date().toISOString().slice(0, 10);
+  const now = new Date().toISOString().slice(0, 10);
 
-    const order = {
-        id: id ? parseInt(id) : DB.nextId('orders'),
-        customerId: custId,
-        customerName: cust.name,
-        jobType: document.getElementById('orderJobType').value,
-        qty,
-        paperType: document.getElementById('orderPaper').value,
-        size: document.getElementById('orderSize').value,
-        color: document.getElementById('orderColor').value,
-        instructions: document.getElementById('orderInstructions').value,
-        deadline,
-        status: document.getElementById('orderStatus').value,
-        assignedTo: document.getElementById('orderAssigned').value,
-        amount,
-        createdAt: id ? (orders.find(o => o.id == id)?.createdAt || now) : now,
-    };
+  const orderData = {
+    customerId: custId,
+    customerName: cust.name,
+    jobType: document.getElementById('orderJobType').value,
+    qty,
+    paperType: document.getElementById('orderPaper').value,
+    size: document.getElementById('orderSize').value,
+    color: document.getElementById('orderColor').value,
+    instructions: document.getElementById('orderInstructions').value,
+    deadline,
+    status: document.getElementById('orderStatus').value,
+    assignedTo: document.getElementById('orderAssigned').value,
+    amount,
+    createdAt: now,
+  };
 
+  if (window.supabaseClient) {
     if (id) {
-        const idx = orders.findIndex(o => o.id === parseInt(id));
-        orders[idx] = order;
-        toast('Order updated successfully!');
+      // Update existing
+      orderData.id = parseInt(id);
+      const { error } = await window.supabaseClient.from('orders').update(orderData).eq('id', parseInt(id));
+      if (error) { toast('Error: ' + error.message, 'error'); return; }
+      toast('Order updated successfully!');
     } else {
-        orders.push(order);
-        toast('Order created successfully!', 'success');
+      // Insert new
+      const { error } = await window.supabaseClient.from('orders').insert([orderData]);
+      if (error) { toast('Error: ' + error.message, 'error'); return; }
+      toast('Order created successfully!', 'success');
     }
+    await loadSupabaseData();
+  }
 
-    DB.set('orders', orders);
-    closeModal('addOrderModal');
-    renderOrders();
+  closeModal('addOrderModal');
+  renderOrders();
 }
 
 function editOrder(id) {
-    const orders = DB.get('orders');
-    const o = orders.find(x => x.id === id);
-    if (!o) return;
-    document.getElementById('orderModalTitle').textContent = 'Edit Order #' + id;
-    document.getElementById('editOrderId').value = id;
-    populateCustomerDropdown('orderCustomer', o.customerId);
-    document.getElementById('orderJobType').value = o.jobType;
-    document.getElementById('orderQty').value = o.qty;
-    document.getElementById('orderPaper').value = o.paperType || '';
-    document.getElementById('orderSize').value = o.size || '';
-    document.getElementById('orderColor').value = o.color || '';
-    document.getElementById('orderInstructions').value = o.instructions || '';
-    document.getElementById('orderDeadline').value = o.deadline;
-    document.getElementById('orderAmount').value = o.amount;
-    document.getElementById('orderStatus').value = o.status;
-    document.getElementById('orderAssigned').value = o.assignedTo || '';
-    openModal('addOrderModal');
+  const orders = DB.get('orders');
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  document.getElementById('orderModalTitle').textContent = 'Edit Order #' + id;
+  document.getElementById('editOrderId').value = id;
+  populateCustomerDropdown('orderCustomer', o.customerId);
+  document.getElementById('orderJobType').value = o.jobType;
+  document.getElementById('orderQty').value = o.qty;
+  document.getElementById('orderPaper').value = o.paperType || '';
+  document.getElementById('orderSize').value = o.size || '';
+  document.getElementById('orderColor').value = o.color || '';
+  document.getElementById('orderInstructions').value = o.instructions || '';
+  document.getElementById('orderDeadline').value = o.deadline;
+  document.getElementById('orderAmount').value = o.amount;
+  document.getElementById('orderStatus').value = o.status;
+  document.getElementById('orderAssigned').value = o.assignedTo || '';
+  openModal('addOrderModal');
 }
 
 function deleteOrder(id) {
-    if (!confirm('Delete order #' + id + '? This cannot be undone.')) return;
-    const orders = DB.get('orders').filter(o => o.id !== id);
-    DB.set('orders', orders);
-    toast('Order deleted', 'warning');
-    renderOrders();
+  if (!confirm('Delete order #' + id + '? This cannot be undone.')) return;
+  const orders = DB.get('orders').filter(o => o.id !== id);
+  DB.set('orders', orders);
+  toast('Order deleted', 'warning');
+  renderOrders();
 }
 
 let currentViewOrder = null;
 
 function viewOrder(id) {
-    const o = DB.get('orders').find(x => x.id === id);
-    if (!o) return;
-    currentViewOrder = o;
-    const s = DB.getOne('settings');
-    document.getElementById('viewOrderBody').innerHTML = `
+  const o = DB.get('orders').find(x => x.id === id);
+  if (!o) return;
+  currentViewOrder = o;
+  const s = DB.getOne('settings');
+  document.getElementById('viewOrderBody').innerHTML = `
     <div style="background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(124,58,237,0.1));border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;border:1px solid rgba(59,130,246,0.2)">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
@@ -173,33 +177,33 @@ function viewOrder(id) {
       </div>
     </div>
   `;
-    openModal('viewOrderModal');
+  openModal('viewOrderModal');
 }
 
 function detail(label, val) {
-    return `<div style="margin-bottom:12px"><div style="font-size:11px;color:var(--text-muted);font-weight:600;margin-bottom:3px">${label.toUpperCase()}</div><div style="font-size:14px;font-weight:500">${val}</div></div>`;
+  return `<div style="margin-bottom:12px"><div style="font-size:11px;color:var(--text-muted);font-weight:600;margin-bottom:3px">${label.toUpperCase()}</div><div style="font-size:14px;font-weight:500">${val}</div></div>`;
 }
 
 function updateOrderStatus(id, status, btn) {
-    const orders = DB.get('orders');
-    const idx = orders.findIndex(o => o.id === id);
-    orders[idx].status = status;
-    DB.set('orders', orders);
-    document.querySelectorAll('.pipeline-step').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    // update badge in table
-    const rows = document.querySelectorAll('#ordersTable tr');
-    renderOrders();
-    toast(`Status updated to "${status}"`, 'success');
+  const orders = DB.get('orders');
+  const idx = orders.findIndex(o => o.id === id);
+  orders[idx].status = status;
+  DB.set('orders', orders);
+  document.querySelectorAll('.pipeline-step').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // update badge in table
+  const rows = document.querySelectorAll('#ordersTable tr');
+  renderOrders();
+  toast(`Status updated to "${status}"`, 'success');
 }
 
 let currentSlipOrder = null;
 function printOrderSlip() {
-    if (!currentViewOrder) return;
-    const o = currentViewOrder;
-    const s = DB.getOne('settings');
-    const win = window.open('', '_blank');
-    win.document.write(`
+  if (!currentViewOrder) return;
+  const o = currentViewOrder;
+  const s = DB.getOne('settings');
+  const win = window.open('', '_blank');
+  win.document.write(`
     <html><head><title>Order Slip #${o.id}</title>
     <style>body{font-family:Arial,sans-serif;padding:24px;max-width:400px;margin:auto;color:#111}
     h2{color:#1e40af;margin-bottom:4px}table{width:100%;border-collapse:collapse;margin-top:12px}
@@ -230,7 +234,7 @@ function printOrderSlip() {
     <script>window.onload=()=>{window.print();window.close()}<\/script>
     </body></html>
   `);
-    win.document.close();
+  win.document.close();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -240,15 +244,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('orderDeadline').value = today;
 
     document.getElementById('addOrderModal').addEventListener('show', () => {
-        document.getElementById('orderModalTitle').textContent = 'New Order';
-        document.getElementById('editOrderId').value = '';
-        document.getElementById('orderStatus').value = 'Pending';
+      document.getElementById('orderModalTitle').textContent = 'New Order';
+      document.getElementById('editOrderId').value = '';
+      document.getElementById('orderStatus').value = 'Pending';
     });
 
     document.querySelector('[onclick="openModal(\'addOrderModal\')"]')?.addEventListener('click', () => {
-        document.getElementById('orderModalTitle').textContent = 'New Order';
-        document.getElementById('editOrderId').value = '';
-        populateCustomerDropdown('orderCustomer');
+      document.getElementById('orderModalTitle').textContent = 'New Order';
+      document.getElementById('editOrderId').value = '';
+      populateCustomerDropdown('orderCustomer');
     });
 
     renderOrders();

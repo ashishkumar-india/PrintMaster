@@ -162,7 +162,7 @@ function openConvert(id) {
   openModal('convertModal');
 }
 
-function doConvert() {
+async function doConvert() {
   if (!convertTarget) return;
   const deadline = document.getElementById('convertDeadline').value;
   const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
@@ -170,20 +170,28 @@ function doConvert() {
   if (!deadline) { toast('Please set a deadline', 'error'); return; }
 
   // Find or create customer
-  const customers = DB.get('customers');
+  let customers = DB.get('customers');
   let cust = customers.find(c => c.phone === convertTarget.phone);
   if (!cust) {
-    cust = { id: DB.nextId('customers'), name: convertTarget.name, phone: convertTarget.phone, email: convertTarget.email || '', gst: '', address: '', createdAt: new Date().toISOString().slice(0, 10) };
-    customers.push(cust);
-    DB.set('customers', customers);
+    const newCust = { name: convertTarget.name, phone: convertTarget.phone, email: convertTarget.email || '', gst: '', address: '', createdAt: new Date().toISOString().slice(0, 10) };
+
+    // Insert directly into Supabase and get the real ID back
+    if (window.supabaseClient) {
+      const { data, error } = await window.supabaseClient.from('customers').insert([newCust]).select();
+      if (error) {
+        toast('Error creating customer: ' + error.message, 'error');
+        return;
+      }
+      cust = data[0]; // Use the real Supabase-assigned record
+      await loadSupabaseData(); // Refresh cache
+    }
     toast(`New customer "${cust.name}" added!`, 'info');
   }
 
-  // Create order
-  const orders = DB.get('orders');
-  const order = {
-    id: DB.nextId('orders'),
-    customerId: cust.id, customerName: cust.name,
+  // Create order using the REAL customer ID from Supabase
+  const newOrder = {
+    customerId: cust.id,
+    customerName: cust.name,
     jobType: convertTarget.service || 'Custom',
     qty: parseInt(convertTarget.qty) || 1,
     paperType: '', size: '', color: '',
@@ -193,15 +201,23 @@ function doConvert() {
     amount,
     createdAt: new Date().toISOString().slice(0, 10),
   };
-  orders.push(order);
-  DB.set('orders', orders);
 
-  // Mark enquiry as converted
-  updateStatus(convertTarget.id, 'Converted');
+  // Insert order directly into Supabase
+  if (window.supabaseClient) {
+    const { data: orderData, error: orderErr } = await window.supabaseClient.from('orders').insert([newOrder]).select();
+    if (orderErr) {
+      toast('Error creating order: ' + orderErr.message, 'error');
+      return;
+    }
+    await loadSupabaseData(); // Refresh cache
 
-  closeModal('convertModal');
-  toast(`Order #${order.id} created for ${cust.name}! ✅`, 'success');
-  setTimeout(() => { if (confirm('Go to Orders page to view the new order?')) location.href = 'orders.html'; }, 800);
+    // Mark enquiry as converted
+    updateStatus(convertTarget.id, 'Converted');
+
+    closeModal('convertModal');
+    toast(`Order #${orderData[0].id} created for ${cust.name}! ✅`, 'success');
+    setTimeout(() => { if (confirm('Go to Orders page to view the new order?')) location.href = 'orders.html'; }, 800);
+  }
 }
 
 // Seed a demo enquiry on first use (so admin isn't empty)

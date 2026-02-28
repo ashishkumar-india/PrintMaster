@@ -2,36 +2,36 @@
 'use strict';
 
 function renderCustomers() {
-    const customers = DB.get('customers');
-    const orders = DB.get('orders');
-    const q = document.getElementById('searchCustomers').value.toLowerCase();
+  const customers = DB.get('customers');
+  const orders = DB.get('orders');
+  const q = document.getElementById('searchCustomers').value.toLowerCase();
 
-    const filtered = customers.filter(c =>
-        !q || c.name.toLowerCase().includes(q) || c.phone.includes(q) || (c.email || '').toLowerCase().includes(q)
-    ).sort((a, b) => b.id - a.id);
+  const filtered = customers.filter(c =>
+    !q || c.name.toLowerCase().includes(q) || c.phone.includes(q) || (c.email || '').toLowerCase().includes(q)
+  ).sort((a, b) => b.id - a.id);
 
-    const totalRev = orders.reduce((a, o) => a + o.amount, 0);
-    const stats = document.getElementById('custStats');
-    if (stats) {
-        stats.innerHTML = `
+  const totalRev = orders.reduce((a, o) => a + o.amount, 0);
+  const stats = document.getElementById('custStats');
+  if (stats) {
+    stats.innerHTML = `
       <div class="stat-pill"><span>👥</span><span style="color:var(--text-secondary)">Customers</span><strong>${customers.length}</strong></div>
       <div class="stat-pill"><span>💰</span><span style="color:var(--text-secondary)">Total Revenue</span><strong>${currency(totalRev)}</strong></div>
       <div class="stat-pill"><span>📋</span><span style="color:var(--text-secondary)">Total Orders</span><strong>${orders.length}</strong></div>
     `;
-    }
+  }
 
-    const tbl = document.getElementById('customersTable');
-    if (!tbl) return;
+  const tbl = document.getElementById('customersTable');
+  if (!tbl) return;
 
-    if (!filtered.length) {
-        tbl.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><p>No customers found</p><button class="btn btn-primary" onclick="openModal('addCustomerModal')">Add First Customer</button></div></td></tr>`;
-        return;
-    }
+  if (!filtered.length) {
+    tbl.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><p>No customers found</p><button class="btn btn-primary" onclick="openModal('addCustomerModal')">Add First Customer</button></div></td></tr>`;
+    return;
+  }
 
-    tbl.innerHTML = filtered.map(c => {
-        const cOrders = orders.filter(o => o.customerId === c.id);
-        const rev = cOrders.reduce((a, o) => a + o.amount, 0);
-        return `
+  tbl.innerHTML = filtered.map(c => {
+    const cOrders = orders.filter(o => o.customerId === c.id);
+    const rev = cOrders.reduce((a, o) => a + o.amount, 0);
+    return `
       <tr onclick="showCustomerDetail(${c.id})" style="cursor:pointer">
         <td><strong style="color:var(--accent-light)">#${c.id}</strong></td>
         <td>
@@ -57,21 +57,21 @@ function renderCustomers() {
         </td>
       </tr>
     `;
-    }).join('');
+  }).join('');
 }
 
 function showCustomerDetail(id) {
-    const customers = DB.get('customers');
-    const orders = DB.get('orders');
-    const c = customers.find(x => x.id === id);
-    if (!c) return;
-    const cOrders = orders.filter(o => o.customerId === id).sort((a, b) => b.id - a.id);
-    const rev = cOrders.reduce((a, o) => a + o.amount, 0);
+  const customers = DB.get('customers');
+  const orders = DB.get('orders');
+  const c = customers.find(x => x.id === id);
+  if (!c) return;
+  const cOrders = orders.filter(o => o.customerId === id).sort((a, b) => b.id - a.id);
+  const rev = cOrders.reduce((a, o) => a + o.amount, 0);
 
-    const panel = document.getElementById('customerDetailPanel');
-    if (!panel) return;
+  const panel = document.getElementById('customerDetailPanel');
+  if (!panel) return;
 
-    panel.innerHTML = `
+  panel.innerHTML = `
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
       <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex-shrink:0">${c.name.charAt(0)}</div>
       <div>
@@ -113,67 +113,70 @@ function showCustomerDetail(id) {
   `;
 }
 
-function saveCustomer() {
-    const id = document.getElementById('editCustId').value;
-    const name = document.getElementById('custName').value.trim();
-    const phone = document.getElementById('custPhone').value.trim();
-    if (!name || !phone) { toast('Name and phone are required', 'error'); return; }
+async function saveCustomer() {
+  const id = document.getElementById('editCustId').value;
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  if (!name || !phone) { toast('Name and phone are required', 'error'); return; }
 
-    const customers = DB.get('customers');
-    const now = new Date().toISOString().slice(0, 10);
+  const now = new Date().toISOString().slice(0, 10);
+  const custData = {
+    name,
+    phone,
+    email: document.getElementById('custEmail').value,
+    gst: document.getElementById('custGst').value,
+    address: document.getElementById('custAddress').value,
+    createdAt: now,
+  };
 
-    const cust = {
-        id: id ? parseInt(id) : DB.nextId('customers'),
-        name,
-        phone,
-        email: document.getElementById('custEmail').value,
-        gst: document.getElementById('custGst').value,
-        address: document.getElementById('custAddress').value,
-        createdAt: id ? (customers.find(c => c.id == id)?.createdAt || now) : now,
-    };
-
+  if (window.supabaseClient) {
     if (id) {
-        const idx = customers.findIndex(c => c.id === parseInt(id));
-        customers[idx] = cust;
-        toast('Customer updated!');
+      // Update existing
+      custData.id = parseInt(id);
+      const { error } = await window.supabaseClient.from('customers').update(custData).eq('id', parseInt(id));
+      if (error) { toast('Error: ' + error.message, 'error'); return; }
+      toast('Customer updated!');
     } else {
-        customers.push(cust);
-        toast('Customer added!', 'success');
+      // Insert new
+      const { error } = await window.supabaseClient.from('customers').insert([custData]);
+      if (error) { toast('Error: ' + error.message, 'error'); return; }
+      toast('Customer added!', 'success');
     }
+    await loadSupabaseData();
+  }
 
-    DB.set('customers', customers);
-    closeModal('addCustomerModal');
-    renderCustomers();
+  closeModal('addCustomerModal');
+  renderCustomers();
 }
 
 function editCustomer(id) {
-    const c = DB.get('customers').find(x => x.id === id);
-    if (!c) return;
-    document.getElementById('custModalTitle').textContent = 'Edit Customer';
-    document.getElementById('editCustId').value = id;
-    document.getElementById('custName').value = c.name;
-    document.getElementById('custPhone').value = c.phone;
-    document.getElementById('custEmail').value = c.email || '';
-    document.getElementById('custGst').value = c.gst || '';
-    document.getElementById('custAddress').value = c.address || '';
-    openModal('addCustomerModal');
+  const c = DB.get('customers').find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('custModalTitle').textContent = 'Edit Customer';
+  document.getElementById('editCustId').value = id;
+  document.getElementById('custName').value = c.name;
+  document.getElementById('custPhone').value = c.phone;
+  document.getElementById('custEmail').value = c.email || '';
+  document.getElementById('custGst').value = c.gst || '';
+  document.getElementById('custAddress').value = c.address || '';
+  openModal('addCustomerModal');
 }
 
 function deleteCustomer(id) {
-    if (!confirm('Delete this customer? Their order history will remain.')) return;
-    const customers = DB.get('customers').filter(c => c.id !== id);
-    DB.set('customers', customers);
-    toast('Customer deleted', 'warning');
-    document.getElementById('customerDetailPanel').innerHTML = `<div class="empty-state"><div class="empty-icon">👤</div><p>Click a customer to view history</p></div>`;
-    renderCustomers();
+  if (!confirm('Delete this customer? Their order history will remain.')) return;
+  const customers = DB.get('customers').filter(c => c.id !== id);
+  DB.set('customers', customers);
+  toast('Customer deleted', 'warning');
+  document.getElementById('customerDetailPanel').innerHTML = `<div class="empty-state"><div class="empty-icon">👤</div><p>Click a customer to view history</p></div>`;
+  renderCustomers();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   window.onDataLoaded(() => {
     document.querySelector('[onclick="openModal(\'addCustomerModal\')"]')?.addEventListener('click', () => {
-        document.getElementById('custModalTitle').textContent = 'Add Customer';
-        document.getElementById('editCustId').value = '';
-        ['custName', 'custPhone', 'custEmail', 'custGst', 'custAddress'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('custModalTitle').textContent = 'Add Customer';
+      document.getElementById('editCustId').value = '';
+      ['custName', 'custPhone', 'custEmail', 'custGst', 'custAddress'].forEach(id => document.getElementById(id).value = '');
     });
     renderCustomers();
   });
