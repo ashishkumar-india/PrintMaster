@@ -1134,19 +1134,25 @@ canvas {
 }
 
 @media (max-width: 450px) {
-  .sidebar {
+  .sidebar.collapsed {
     width: var(--sidebar-w-col);
   }
 
-  .sidebar .nav-label,
-  .sidebar .nav-section-label,
-  .sidebar .logo-text,
-  .sidebar .nav-badge {
+  .sidebar.collapsed .nav-label,
+  .sidebar.collapsed .nav-section-label,
+  .sidebar.collapsed .logo-text,
+  .sidebar.collapsed .nav-badge {
     display: none;
   }
 
-  .main {
+  .sidebar.collapsed~.main {
     margin-left: var(--sidebar-w-col);
+  }
+
+  .main {
+    margin-left: var(--sidebar-w);
+    /* Default for mobile is expanded state logic */
+    transition: margin-left var(--transition);
   }
 
   .sidebar-toggle span:last-child {
