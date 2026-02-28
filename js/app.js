@@ -90,40 +90,12 @@ const DB = {
     DB_CACHE[key] = val; // Synchronously update cache for instant UI rendering
 
     if (window.supabaseClient) {
+      // Only handle DELETIONS here — inserts and updates are done directly in save functions
       if (toDelete.length > 0) {
         for (const id of toDelete) {
           const { error: delErr } = await window.supabaseClient.from(key).delete().eq('id', id);
           if (delErr) console.error(`Error deleting from ${key}:`, delErr);
         }
-      }
-      if (val.length > 0) {
-        for (const item of val) {
-          const copy = { ...item };
-
-          // Check if this record already exists in Supabase by matching against our local cache snapshot
-          const existsLocally = localStorage.getItem(`pp_${key}`) && JSON.parse(localStorage.getItem(`pp_${key}`)).some(i => i.id === copy.id);
-
-          try {
-            if (existsLocally) {
-              // It exists, so we UPDATE
-              const { error } = await window.supabaseClient.from(key).update(copy).eq('id', copy.id);
-              if (error) throw error;
-            } else {
-              // It's a new record from the UI, so we INSERT and let Postgres assign the real ID
-              delete copy.id; // CRITICAL: Postgres auto-generates this!
-
-              const { error } = await window.supabaseClient.from(key).insert(copy);
-              if (error) throw error;
-            }
-          } catch (err) {
-            console.error(`Database error on ${key}:`, err);
-            alert(`Error saving ${key}: ` + err.message);
-          }
-        }
-
-        // At the end, force a fresh pull from the DB so all real IDs sync down
-        await loadSupabaseData();
-        document.dispatchEvent(new Event('db-loaded'));
       }
     }
   },
