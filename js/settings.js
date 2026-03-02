@@ -147,13 +147,11 @@ function editService(id) {
   openModal('serviceModal');
 }
 
-function saveServiceBtn() {
+async function saveServiceBtn() {
   const name = document.getElementById('srvName').value.trim();
   if (!name) { toast('Service Name is required', 'error'); return; }
 
   const id = document.getElementById('serviceId').value;
-  const services = DB.get('services') || [];
-
   const srv = {
     name,
     icon: document.getElementById('srvIcon').value.trim() || '💼',
@@ -162,19 +160,39 @@ function saveServiceBtn() {
     color: document.getElementById('srvColor').value || '#3b82f6'
   };
 
-  if (id) {
-    srv.id = parseInt(id);
-    const idx = services.findIndex(x => x.id === srv.id);
-    if (idx > -1) services[idx] = { ...services[idx], ...srv };
+  const btn = document.querySelector('#serviceModal .btn-primary');
+  const btnOriginalText = btn.textContent;
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+
+  if (window.supabaseClient) {
+    if (id) {
+      srv.id = parseInt(id);
+      const { error } = await window.supabaseClient.from('services').update(srv).eq('id', srv.id);
+      if (error) { toast('Error: ' + error.message, 'error'); btn.textContent = btnOriginalText; btn.disabled = false; return; }
+    } else {
+      const { error } = await window.supabaseClient.from('services').insert([srv]);
+      if (error) { toast('Error: ' + error.message, 'error'); btn.textContent = btnOriginalText; btn.disabled = false; return; }
+    }
+    await loadSupabaseData();
   } else {
-    srv.id = DB.nextId('services');
-    srv.createdAt = new Date().toISOString();
-    services.push(srv);
+    const services = DB.get('services') || [];
+    if (id) {
+      srv.id = parseInt(id);
+      const idx = services.findIndex(x => x.id === srv.id);
+      if (idx > -1) services[idx] = { ...services[idx], ...srv };
+    } else {
+      srv.id = DB.nextId('services');
+      srv.createdAt = new Date().toISOString();
+      services.push(srv);
+    }
+    DB.set('services', services);
   }
 
-  DB.set('services', services);
+  btn.textContent = btnOriginalText;
+  btn.disabled = false;
   closeModal('serviceModal');
-  toast('Service saved successfully!', 'success');
+  toast('Service saved!', 'success');
   renderServices();
 }
 
@@ -238,13 +256,11 @@ function editPortfolio(id) {
   openModal('portfolioModal');
 }
 
-function savePortfolioBtn() {
+async function savePortfolioBtn() {
   const title = document.getElementById('portTitle').value.trim();
   if (!title) { toast('Project Title is required', 'error'); return; }
 
   const id = document.getElementById('portId').value;
-  const portfolio = DB.get('portfolio') || [];
-
   const port = {
     title,
     icon: document.getElementById('portIcon').value.trim() || '🖼️',
@@ -252,19 +268,39 @@ function savePortfolioBtn() {
     color2: document.getElementById('portColor2').value || '#9a3412'
   };
 
-  if (id) {
-    port.id = parseInt(id);
-    const idx = portfolio.findIndex(x => x.id === port.id);
-    if (idx > -1) portfolio[idx] = { ...portfolio[idx], ...port };
+  const btn = document.querySelector('#portfolioModal .btn-primary');
+  const btnOriginalText = btn.textContent;
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+
+  if (window.supabaseClient) {
+    if (id) {
+      port.id = parseInt(id);
+      const { error } = await window.supabaseClient.from('portfolio').update(port).eq('id', port.id);
+      if (error) { toast('Error: ' + error.message, 'error'); btn.textContent = btnOriginalText; btn.disabled = false; return; }
+    } else {
+      const { error } = await window.supabaseClient.from('portfolio').insert([port]);
+      if (error) { toast('Error: ' + error.message, 'error'); btn.textContent = btnOriginalText; btn.disabled = false; return; }
+    }
+    await loadSupabaseData();
   } else {
-    port.id = DB.nextId('portfolio');
-    port.createdAt = new Date().toISOString();
-    portfolio.push(port);
+    const portfolio = DB.get('portfolio') || [];
+    if (id) {
+      port.id = parseInt(id);
+      const idx = portfolio.findIndex(x => x.id === port.id);
+      if (idx > -1) portfolio[idx] = { ...portfolio[idx], ...port };
+    } else {
+      port.id = DB.nextId('portfolio');
+      port.createdAt = new Date().toISOString();
+      portfolio.push(port);
+    }
+    DB.set('portfolio', portfolio);
   }
 
-  DB.set('portfolio', portfolio);
+  btn.textContent = btnOriginalText;
+  btn.disabled = false;
   closeModal('portfolioModal');
-  toast('Portfolio item saved successfully!', 'success');
+  toast('Portfolio item saved!', 'success');
   renderPortfolio();
 }
 
