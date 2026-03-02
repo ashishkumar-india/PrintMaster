@@ -1,7 +1,12 @@
 /* customers.js */
 'use strict';
 
-function renderCustomers() {
+let custPage = 1;
+let custPageSize = 10;
+
+function renderCustomers(page, pageSize) {
+  if (page) custPage = page;
+  if (pageSize) custPageSize = pageSize;
   const customers = DB.get('customers');
   const orders = DB.get('orders');
   const q = document.getElementById('searchCustomers').value.toLowerCase();
@@ -25,10 +30,12 @@ function renderCustomers() {
 
   if (!filtered.length) {
     tbl.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><p>No customers found</p><button class="btn btn-primary" onclick="openModal('addCustomerModal')">Add First Customer</button></div></td></tr>`;
+    renderPagination('custPagination', 0, 1, custPageSize, renderCustomers);
     return;
   }
 
-  tbl.innerHTML = filtered.map(c => {
+  const paged = paginateArray(filtered, custPage, custPageSize);
+  tbl.innerHTML = paged.map(c => {
     const cOrders = orders.filter(o => o.customerId === c.id);
     const rev = cOrders.reduce((a, o) => a + o.amount, 0);
     return `
@@ -58,6 +65,7 @@ function renderCustomers() {
       </tr>
     `;
   }).join('');
+  renderPagination('custPagination', filtered.length, custPage, custPageSize, renderCustomers);
 }
 
 function showCustomerDetail(id) {

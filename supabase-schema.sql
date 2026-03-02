@@ -88,14 +88,30 @@ INSERT INTO settings ("shopName", "ownerName", phone, email, address, gst, "taxR
 VALUES ('Star Xerox', 'Ashish Kumar', '9162141111', 'starxerox@gmail.com', 'Bihta, Near Railway Station', '', 18, '₹', 'Goods once sold will not be returned.')
 ON CONFLICT (id) DO NOTHING;
 
--- Disable Row Level Security (RLS) for ease of MVP development
--- (In a real production app with user logins, you would enable RLS and add policies)
-ALTER TABLE customers DISABLE ROW LEVEL SECURITY;
-ALTER TABLE orders DISABLE ROW LEVEL SECURITY;
-ALTER TABLE inventory DISABLE ROW LEVEL SECURITY;
-ALTER TABLE invoices DISABLE ROW LEVEL SECURITY;
-ALTER TABLE enquiries DISABLE ROW LEVEL SECURITY;
-ALTER TABLE settings DISABLE ROW LEVEL SECURITY;
+-- ============================================================
+-- ROW LEVEL SECURITY (RLS) — Production Policies
+-- ============================================================
+-- Enable RLS on all tables
+ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
+ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
+ALTER TABLE enquiries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+
+-- Authenticated users (admin) get full access to all tables
+CREATE POLICY "Admin full access on customers" ON customers FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access on orders" ON orders FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access on inventory" ON inventory FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access on invoices" ON invoices FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access on enquiries" ON enquiries FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access on settings" ON settings FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+-- Anonymous users can INSERT enquiries (contact form from customer website)
+CREATE POLICY "Anon can submit enquiries" ON enquiries FOR INSERT WITH CHECK (true);
+
+-- Anonymous users can READ settings (for website display)
+CREATE POLICY "Anon can read settings" ON settings FOR SELECT USING (true);
 
 -- 7. Services Table
 CREATE TABLE services (
@@ -115,7 +131,9 @@ INSERT INTO services (name, description, icon, price, color) VALUES
 ('Books & Notebooks', 'Perfect binding, spiral binding, and saddle-stitching for books, manuals, catalogs, and notebooks.', '📚', 'Custom pricing', '#a78bfa'),
 ('Letterheads & Pads', 'Professional letterheads, note pads, prescription pads with your logo and brand colors. Bulk discounts available.', '🏷️', 'From ₹1.5/sheet', '#06b6d4'),
 ('Custom Printing', 'Stickers, envelopes, calendars, wedding cards, invitation cards, certificates — you name it, we print it!', '🎨', 'Contact for pricing', '#ec4899');
-ALTER TABLE services DISABLE ROW LEVEL SECURITY;
+ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anon can read services" ON services FOR SELECT USING (true);
+CREATE POLICY "Admin full access on services" ON services FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- 8. Portfolio Table
 CREATE TABLE portfolio (
@@ -134,4 +152,6 @@ INSERT INTO portfolio (title, icon, color1, color2) VALUES
 ('Custom T-Shirts', '👕', '#8b5cf6', '#5b21b6'),
 ('Restaurant Menus', '📖', '#f59e0b', '#b45309'),
 ('Wedding Cards', '💌', '#ec4899', '#be185d');
-ALTER TABLE portfolio DISABLE ROW LEVEL SECURITY;
+ALTER TABLE portfolio ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anon can read portfolio" ON portfolio FOR SELECT USING (true);
+CREATE POLICY "Admin full access on portfolio" ON portfolio FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');

@@ -171,7 +171,6 @@ function seedData() {
 function initNav() {
   const sidebar = document.querySelector('.sidebar');
   const toggleBtn = document.getElementById('sidebarToggle');
-  // Always start expanded — no localStorage persistence
 
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
@@ -179,7 +178,43 @@ function initNav() {
     });
   }
 
+  // ── Mobile sidebar (hamburger + backdrop) ──
+  const topbarLeft = document.querySelector('.topbar-left');
+  if (topbarLeft && !document.getElementById('hamburgerBtn')) {
+    const hamburger = document.createElement('button');
+    hamburger.id = 'hamburgerBtn';
+    hamburger.className = 'hamburger-btn';
+    hamburger.innerHTML = '☰';
+    hamburger.title = 'Open Menu';
+    topbarLeft.insertBefore(hamburger, topbarLeft.firstChild);
 
+    // Backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    backdrop.id = 'sidebarBackdrop';
+    document.body.appendChild(backdrop);
+
+    const closeMobileSidebar = () => {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('open');
+    };
+
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.toggle('mobile-open');
+      backdrop.classList.toggle('open');
+    });
+
+    backdrop.addEventListener('click', closeMobileSidebar);
+
+    // Close sidebar when a nav link is clicked on mobile
+    document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) closeMobileSidebar();
+      });
+    });
+  }
+
+  // Logout button
   const sidemenu = document.querySelector('.sidebar-nav');
   if (sidemenu && !document.getElementById('logoutBtn')) {
     const logoutLink = document.createElement('a');
@@ -282,6 +317,74 @@ function statusBadge(status) {
 }
 
 // ──────────────────────────────────────────────────────────────────
+// PAGINATION HELPER (reusable across all pages)
+// ──────────────────────────────────────────────────────────────────
+function renderPagination(containerId, totalItems, currentPage, pageSize, onPageChange) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const start = (currentPage - 1) * pageSize + 1;
+  const end = Math.min(currentPage * pageSize, totalItems);
+
+  // Build page buttons (show max 5 pages with ellipsis)
+  let pageButtons = '';
+  const maxVisible = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+  if (startPage > 1) {
+    pageButtons += `<button data-page="1">1</button>`;
+    if (startPage > 2) pageButtons += `<button disabled>…</button>`;
+  }
+  for (let i = startPage; i <= endPage; i++) {
+    pageButtons += `<button data-page="${i}" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+  }
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) pageButtons += `<button disabled>…</button>`;
+    pageButtons += `<button data-page="${totalPages}">${totalPages}</button>`;
+  }
+
+  container.innerHTML = `
+    <div class="pagination">
+      <span class="pagination-info">Showing ${totalItems ? start : 0}–${end} of ${totalItems}</span>
+      <div class="pagination-controls">
+        <button data-page="${currentPage - 1}" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>
+        ${pageButtons}
+        <button data-page="${currentPage + 1}" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>
+      </div>
+      <div class="pagination-size">
+        <span>Per page:</span>
+        <select>
+          ${[10, 25, 50].map(s => `<option value="${s}" ${s === pageSize ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `;
+
+  // Event listeners
+  container.querySelectorAll('.pagination-controls button[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = parseInt(btn.dataset.page);
+      if (p >= 1 && p <= totalPages) onPageChange(p, pageSize);
+    });
+  });
+
+  container.querySelector('.pagination-size select')?.addEventListener('change', (e) => {
+    onPageChange(1, parseInt(e.target.value));
+  });
+}
+
+// Helper: paginate an array and return sliced data
+function paginateArray(arr, page, pageSize) {
+  const start = (page - 1) * pageSize;
+  return arr.slice(start, start + pageSize);
+}
+
+// ──────────────────────────────────────────────────────────────────
 // INIT
 // ──────────────────────────────────────────────────────────────────
 window.onDataLoaded = function (cb) {
@@ -294,4 +397,3 @@ document.addEventListener('DOMContentLoaded', () => {
     initNav();
   });
 });
-

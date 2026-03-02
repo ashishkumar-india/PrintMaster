@@ -1,6 +1,9 @@
 /* enquiries.js */
 'use strict';
 
+let enqPage = 1;
+let enqPageSize = 10;
+
 function getEnquiries() {
   return DB.get('enquiries');
 }
@@ -8,7 +11,9 @@ function saveEnquiries(arr) {
   DB.set('enquiries', arr);
 }
 
-function renderEnquiries() {
+function renderEnquiries(page, pageSize) {
+  if (page) enqPage = page;
+  if (pageSize) enqPageSize = pageSize;
   const enqs = getEnquiries();
   const q = (document.getElementById('searchEnq')?.value || '').toLowerCase();
   const st = document.getElementById('filterEnqStatus')?.value || '';
@@ -45,12 +50,14 @@ function renderEnquiries() {
       <p>No enquiries yet. Share your website to get quote requests!</p>
       <a href="customer.html" target="_blank" class="btn btn-primary">🌐 Open Customer Website</a>
     </div></td></tr>`;
+    renderPagination('enqPagination', 0, 1, enqPageSize, renderEnquiries);
     return;
   }
 
   const statusMap = { New: 'badge-pending', Contacted: 'badge-progress', Converted: 'badge-delivered', Closed: 'badge-unpaid' };
 
-  tbl.innerHTML = filtered.map(e => `
+  const paged = paginateArray(filtered, enqPage, enqPageSize);
+  tbl.innerHTML = paged.map(e => `
     <tr onclick="showDetail(${e.id})" style="cursor:pointer">
       <td><strong style="color:var(--accent-light)">#${String(e.id).slice(-4)}</strong></td>
       <td style="font-size:12px;color:var(--text-secondary)">${formatDate(e.date?.slice(0, 10))}</td>
@@ -72,6 +79,7 @@ function renderEnquiries() {
       </td>
     </tr>
   `).join('');
+  renderPagination('enqPagination', filtered.length, enqPage, enqPageSize, renderEnquiries);
 }
 
 function showDetail(id) {

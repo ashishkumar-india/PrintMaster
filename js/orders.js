@@ -1,7 +1,12 @@
 /* orders.js */
 'use strict';
 
-function renderOrders() {
+let ordersPage = 1;
+let ordersPageSize = 10;
+
+function renderOrders(page, pageSize) {
+  if (page) ordersPage = page;
+  if (pageSize) ordersPageSize = pageSize;
   const orders = DB.get('orders');
   const q = document.getElementById('searchOrders').value.toLowerCase();
   const st = document.getElementById('filterStatus').value;
@@ -28,10 +33,12 @@ function renderOrders() {
 
   if (!filtered.length) {
     tbl.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📋</div><p>No orders found</p><button class="btn btn-primary" onclick="openModal('addOrderModal')">Create First Order</button></div></td></tr>`;
+    renderPagination('ordersPagination', 0, 1, ordersPageSize, renderOrders);
     return;
   }
 
-  tbl.innerHTML = filtered.map(o => `
+  const paged = paginateArray(filtered, ordersPage, ordersPageSize);
+  tbl.innerHTML = paged.map(o => `
     <tr>
       <td><strong style="color:var(--accent-light)">#${o.id}</strong></td>
       <td style="font-size:12px;color:var(--text-secondary)">${formatDate(o.createdAt)}</td>
@@ -51,6 +58,7 @@ function renderOrders() {
       </td>
     </tr>
   `).join('');
+  renderPagination('ordersPagination', filtered.length, ordersPage, ordersPageSize, renderOrders);
 }
 
 function populateCustomerDropdown(selectId, selectedId = null) {

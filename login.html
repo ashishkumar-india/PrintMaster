@@ -104,6 +104,35 @@
             margin-top: 10px;
             display: none;
         }
+
+        .forgot-link {
+            font-size: 13px;
+            color: #60a5fa;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .forgot-link:hover {
+            color: #93bbfc;
+            text-decoration: underline;
+        }
+
+        .success-msg {
+            color: #22c55e;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .reset-section {
+            display: none;
+        }
+
+        .reset-section.active {
+            display: block;
+        }
     </style>
 </head>
 
@@ -113,8 +142,9 @@
         <div class="login-logo"><img src="img/logo.png" alt="Star Xerox"
                 style="width:64px;height:64px;border-radius:12px;object-fit:cover"></div>
         <div class="login-title">Star Xerox</div>
-        <div class="login-sub">Sign in to Admin Dashboard</div>
+        <div class="login-sub" id="loginSubtitle">Sign in to Admin Dashboard</div>
 
+        <!-- LOGIN FORM -->
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
                 <label class="form-label">Secure Admin Email</label>
@@ -129,10 +159,30 @@
             <button type="submit" class="btn btn-primary btn-login">Sign In</button>
             <div class="error-msg" id="errorMsg">Invalid credentials.</div>
 
-            <div style="margin-top: 20px; font-size: 13px; color: var(--muted);">
+            <div>
+                <span class="forgot-link" onclick="showResetForm()">Forgot Password?</span>
+            </div>
+
+            <div style="margin-top: 12px; font-size: 13px; color: var(--muted);">
                 <a href="customer.html" style="color: var(--accent); text-decoration: none;">← Back to Website</a>
             </div>
         </form>
+
+        <!-- RESET PASSWORD FORM -->
+        <div class="reset-section" id="resetSection">
+            <form id="resetForm" onsubmit="handleReset(event)">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="resetEmail" class="form-control" placeholder="your@email.com" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-login" id="resetBtn">📧 Send Reset Link</button>
+                <div class="error-msg" id="resetError"></div>
+                <div class="success-msg" id="resetSuccess">✅ Password reset link sent! Check your email inbox.</div>
+                <div style="margin-top: 12px;">
+                    <span class="forgot-link" onclick="showLoginForm()">← Back to Login</span>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- High Security Supabase Integration -->
@@ -153,7 +203,7 @@
             const u = document.getElementById('username').value;
             const p = document.getElementById('password').value;
 
-            const btn = document.querySelector('.btn-login');
+            const btn = document.querySelector('#loginForm .btn-login');
             btn.textContent = 'Authenticating securely...';
             btn.disabled = true;
 
@@ -172,6 +222,48 @@
             } else {
                 window.location.href = 'index.html';
             }
+        }
+
+        // ── Password Reset ──
+        function showResetForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('resetSection').classList.add('active');
+            document.getElementById('loginSubtitle').textContent = 'Reset your password';
+            document.getElementById('resetSuccess').style.display = 'none';
+            document.getElementById('resetError').style.display = 'none';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = '';
+            document.getElementById('resetSection').classList.remove('active');
+            document.getElementById('loginSubtitle').textContent = 'Sign in to Admin Dashboard';
+        }
+
+        async function handleReset(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value.trim();
+            if (!email) return;
+
+            const btn = document.getElementById('resetBtn');
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+
+            const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, {
+                redirectTo: window.location.origin + '/login.html'
+            });
+
+            if (error) {
+                const errEl = document.getElementById('resetError');
+                errEl.textContent = error.message || 'Failed to send reset email.';
+                errEl.style.display = 'block';
+                setTimeout(() => errEl.style.display = 'none', 4000);
+            } else {
+                document.getElementById('resetSuccess').style.display = 'block';
+                document.getElementById('resetError').style.display = 'none';
+            }
+
+            btn.textContent = '📧 Send Reset Link';
+            btn.disabled = false;
         }
     </script>
 </body>
