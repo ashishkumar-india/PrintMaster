@@ -12,6 +12,29 @@
         rel="stylesheet" />
     <style>
         :root {
+            /* LIGHT THEME (Default) */
+            --bg: #f8fafc;
+            --bg2: #f1f5f9;
+            --bg3: #ffffff;
+            --accent: #2563eb;
+            --accent2: #4f46e5;
+            --gold: #d97706;
+            --success: #16a34a;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: rgba(0, 0, 0, 0.08);
+            --glow: rgba(37, 99, 235, 0.15);
+            --r: 16px;
+
+            /* Alpha / overlay helpers */
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --input-bg: rgba(0, 0, 0, 0.05);
+            --info-icon-bg: rgba(37, 99, 235, 0.1);
+            --info-icon-border: rgba(37, 99, 235, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* DARK THEME */
             --bg: #06090f;
             --bg2: #0e1420;
             --bg3: #141c2e;
@@ -23,7 +46,11 @@
             --muted: #94a3b8;
             --border: rgba(255, 255, 255, 0.08);
             --glow: rgba(59, 130, 246, 0.2);
-            --r: 16px;
+
+            --nav-bg: rgba(6, 9, 15, 0.85);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --info-icon-bg: rgba(59, 130, 246, 0.1);
+            --info-icon-border: rgba(59, 130, 246, 0.2);
         }
 
         *,
@@ -65,7 +92,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 16px 60px;
-            background: rgba(6, 9, 15, 0.85);
+            background: var(--nav-bg);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
             transition: all 0.3s;
@@ -514,8 +541,6 @@
         }
 
         /* GALLERY / PORTFOLIO */
-        .portfolio {}
-
         .portfolio-header {
             display: flex;
             justify-content: space-between;
@@ -637,8 +662,6 @@
         }
 
         /* CONTACT */
-        .contact {}
-
         .contact-inner {
             display: grid;
             grid-template-columns: 1fr 1.2fr;
@@ -671,8 +694,8 @@
             width: 42px;
             height: 42px;
             border-radius: 10px;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: var(--info-icon-bg);
+            border: 1px solid var(--info-icon-border);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -719,7 +742,7 @@
         .form-control {
             width: 100%;
             padding: 11px 14px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--input-bg);
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--text);
@@ -1004,6 +1027,27 @@
 </head>
 
 <body>
+    <!-- Theme Initialization (Runs immediately to prevent flash) -->
+    <script>
+        const savedTheme = localStorage.getItem('pp_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('pp_theme', next);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const btn = document.getElementById('themeToggleBtn');
+            if (btn) btn.innerHTML = document.documentElement.getAttribute('data-theme') === 'dark' ? '🌙' : '☀️';
+        }
+
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
+
 
     <!-- Admin bar -->
     <div class="admin-bar">
@@ -1025,6 +1069,9 @@
             <a href="#contact">Contact</a>
         </div>
         <div class="nav-cta">
+            <button id="themeToggleBtn" onclick="toggleTheme()" class="btn btn-outline"
+                style="padding: 10px; font-size: 16px; border: none; background: transparent; cursor: pointer;"
+                title="Toggle Theme">☀️</button>
             <a href="tel:9162141111" class="btn btn-outline">📞 Call Us</a>
             <a href="#contact" class="btn btn-primary">Get Quote</a>
         </div>
