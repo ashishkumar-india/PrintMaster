@@ -138,10 +138,12 @@ function renderReports() {
     const statuses = ['Pending', 'In Progress', 'Ready', 'Delivered'];
     const sumTbl = document.getElementById('orderSumTable');
     if (sumTbl) {
-        sumTbl.innerHTML = statuses.map(s => {
+        let rowsHtml = '';
+        statuses.forEach(s => {
             const grp = orders.filter(o => o.status === s);
-            return `<tr><td>${statusBadge(s)}</td><td><strong>${grp.length}</strong></td><td>${currency(grp.reduce((a, o) => a + o.amount, 0))}</td></tr>`;
-        }).join('');
+            rowsHtml += `<tr><td>${statusBadge(s)}</td><td><strong>${grp.length}</strong></td><td>${currency(grp.reduce((a, o) => a + o.amount, 0))}</td></tr>`;
+        });
+        sumTbl.innerHTML = rowsHtml;
     }
 
     // Payment summary
@@ -149,11 +151,13 @@ function renderReports() {
     if (pay) {
         const rangeInv = invoices.filter(i => inRange(i.createdAt));
         const total = rangeInv.reduce((a, b) => a + b.total, 0) || 1;
+        let payHtml = '';
         [['Paid', '#22c55e'], ['Unpaid', '#ef4444'], ['Partial', '#f59e0b']].forEach(([st, col]) => {
             const amt = rangeInv.filter(i => i.status === st).reduce((a, b) => a + b.total, 0);
             const pct = Math.round(amt / total * 100);
-            pay.innerHTML += `<div style="font-size:13px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--text-secondary)">${st}</span><strong>${currency(amt)} (${pct}%)</strong></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${col}"></div></div></div>`;
+            payHtml += `<div style="font-size:13px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--text-secondary)">${st}</span><strong>${currency(amt)} (${pct}%)</strong></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${col}"></div></div></div>`;
         });
+        pay.innerHTML = payHtml;
     }
 }
 
@@ -170,7 +174,11 @@ function exportCSV() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.onDataLoaded(() => {
-    setRange('month');
-  });
+    document.addEventListener('db-loaded', () => {
+        setRange('month');
+    });
+    // In case db is already loaded
+    if (window.dbLoaded) {
+        setRange('month');
+    }
 });
