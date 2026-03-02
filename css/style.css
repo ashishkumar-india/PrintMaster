@@ -6,6 +6,47 @@
 
 /* ── CSS Variables ── */
 :root {
+  /* LIGHT THEME (Default) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --border-hover: #cbd5e1;
+
+  --accent: #2563eb;
+  --accent-light: #3b82f6;
+  --accent-glow: rgba(37, 99, 235, 0.2);
+
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+  --info: #0891b2;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  --sidebar-w: 240px;
+  --sidebar-w-col: 72px;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 16px rgba(37, 99, 235, 0.15);
+
+  --transition: 0.2s ease;
+
+  /* Transparent overlay helpers */
+  --glass-bg: rgba(0, 0, 0, 0.02);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --input-bg: rgba(0, 0, 0, 0.02);
+  --table-head: rgba(0, 0, 0, 0.03);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.1);
+  --modal-overlay: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] {
+  /* DARK THEME */
   --bg-primary: #0a0f1e;
   --bg-secondary: #111827;
   --bg-card: rgba(255, 255, 255, 0.04);
@@ -26,14 +67,15 @@
   --text-secondary: #94a3b8;
   --text-muted: #475569;
 
-  --sidebar-w: 240px;
-  --sidebar-w-col: 72px;
-  --radius: 14px;
-  --radius-sm: 8px;
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
   --shadow-glow: 0 0 24px rgba(59, 130, 246, 0.2);
 
-  --transition: 0.2s ease;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --table-head: rgba(255, 255, 255, 0.04);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --modal-overlay: rgba(0, 0, 0, 0.7);
 }
 
 /* ── Reset ── */
@@ -180,7 +222,7 @@ img {
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--scrollbar-thumb);
   border-radius: 10px;
 }
 
@@ -389,10 +431,10 @@ img {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius);
 }
 
@@ -576,7 +618,7 @@ img {
 .form-control {
   width: 100%;
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--input-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
@@ -630,7 +672,7 @@ table {
 }
 
 thead tr {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--table-head);
 }
 
 th,
@@ -735,7 +777,7 @@ tbody tr:last-child td {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--modal-overlay);
   backdrop-filter: blur(4px);
   z-index: 200;
   display: none;

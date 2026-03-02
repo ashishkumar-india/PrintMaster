@@ -5,6 +5,28 @@
 'use strict';
 
 // ──────────────────────────────────────────────────────────────────
+// THEME INITIALIZATION (Runs immediately to prevent flash)
+// ──────────────────────────────────────────────────────────────────
+const savedTheme = localStorage.getItem('pp_theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('pp_theme', next);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const btn = document.getElementById('themeToggleBtn');
+  if (btn) {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    btn.innerHTML = isDark ? '🌙' : '☀️';
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────
 // HIGH SECURITY AUTHENTICATION CHECK (Supabase)
 // ──────────────────────────────────────────────────────────────────
 async function checkAuth() {
@@ -253,6 +275,20 @@ function initNav() {
   if (dateEl) {
     const d = new Date();
     dateEl.textContent = d.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  // Theme toggle button
+  const topbarRight = document.querySelector('.topbar-right');
+  if (topbarRight && !document.getElementById('themeToggleBtn')) {
+    const themeBtn = document.createElement('button');
+    themeBtn.id = 'themeToggleBtn';
+    themeBtn.className = 'btn btn-secondary btn-icon';
+    themeBtn.style.padding = '6px';
+    themeBtn.style.fontSize = '16px';
+    themeBtn.title = 'Toggle Theme';
+    themeBtn.onclick = toggleTheme;
+    topbarRight.insertBefore(themeBtn, topbarRight.firstChild);
+    updateThemeIcon();
   }
 }
 
